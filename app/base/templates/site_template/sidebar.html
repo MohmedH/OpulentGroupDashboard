@@ -1,0 +1,95 @@
+
+
+    <div class="sidebar" data-color="purple" data-background-color="black" data-image="/static/assets/img/sidebar-2.jpg">
+        <!--
+          Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+  
+          Tip 2: you can also add an image using data-image tag
+        -->
+        <div class="logo">
+          <a href="https://appseed.us/admin-dashboards/flask-dashboard-material-dark" class="simple-text logo-normal">
+            Dashboard Info
+            {% if current_user.u_role == 'admin' %} 
+            hi Admin :)
+            {% endif %}
+          </a>
+        </div>
+        <div class="sidebar-wrapper">
+          <ul class="nav">
+            {% if current_user.is_authenticated %}  
+            <li class="nav-item ">
+              <a class="nav-link" href="/">
+                <i class="material-icons">dashboard</i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/ui-tables">
+                <i class="material-icons">attach_money</i>
+                <p>Withdraw</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/newsletter">
+                <i class="material-icons">content_paste</i>
+                <p>Newsletter</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/ui-tables">
+                <i class="material-icons">info_outline</i>
+                <p>Information</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/profile">
+                  <i class="material-icons">person</i>
+                  <p>User Profile</p>
+              </a>
+            </li>
+            <!--ONLY SHOW BOTTOM FOR ADMINS-->
+            {% if current_user.u_role == 'admin' %}
+            <li class="nav-item ">
+              <a class="nav-link" href="/ui-tables">
+                <i class="material-icons">content_paste</i>
+                <p>User List</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/ui-typography">
+                <i class="material-icons">library_books</i>
+                <p>Update Gain/Loss</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/ui-icons">
+                <i class="material-icons">bubble_chart</i>
+                <p>Icons</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="/ui-notifications">
+                    <i class="material-icons">notifications</i>
+                    <p>Notifications</p>
+                </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="/page-map">
+                <i class="material-icons">location_ons</i>
+                <p>Maps</p>
+              </a>
+            </li>
+            {% endif %}
+            <!--END OF ADMIN OPTIONS-->
+
+            <li class="nav-item ">
+                <a class="nav-link" href={{ url_for('base_blueprint.logout') }} >
+                    <i class="material-icons">directions_run</i>
+                    <p>Logout</p>
+                </a>
+            </li>
+            {% endif %}
+
+          </ul>
+        </div>
+    </div>
