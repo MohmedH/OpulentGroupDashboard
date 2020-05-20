@@ -7,10 +7,11 @@ __pycache__/
 .coverage
 
 # database & logs
-*.db
+#*.db Uncomment when you don't want database.db to sync up across all repos
 *.log
 
 # venv
+env
 venv
 
 # other
