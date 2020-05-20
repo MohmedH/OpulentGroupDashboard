@@ -3,7 +3,7 @@
 License: MIT
 Copyright (c) 2019 - present AppSeed.us
 """
-
+import random
 from flask import jsonify, session, render_template, redirect, request, url_for
 from flask_login import (
     current_user,
@@ -17,7 +17,7 @@ from app.base import blueprint
 from app.base.forms import LoginForm, CreateAccountForm
 from app.base.models import User, Portfolio
 
-from app.base.util import verify_pass
+from app.base.util import verify_pass, hash_pass
 
 @blueprint.route('/')
 def route_default():
@@ -104,16 +104,30 @@ def reset_password():
     if 'next' in request.form:
         #Check if email even exisits, if it does generate a code, save code in session, then email the code out, and return template
         #If email doesn't exist, no need to save any code, just render the page 
+        #session['code'] = str(random.randint(100000000000,999999999999))
         session['code'] = '12345'
-        session['user'] = request.form['username']
-        return render_template( 'login/forgotpass.html',msg=request.form['username'], errM="Bad code, or Email")
+        session['email'] = request.form['email']
+        #print(session['code'])
+        #Need to replace print with a check to see if the email is real or not, and then send an email based on that
+
+        return render_template( 'login/forgotpass.html',msg=request.form['email'], errM="Check your email for the code!")
     elif 'reset' in request.form:
-        #DO CHECKING FOR CODE HERE
-        #IF CORRECT THEN RESET THE PASS
-        #Redirect to loginpage
-        #return session['code'] + ' '+ session['user']
-        session['msg'] = 'Use this password: TEMPPASS115435 and please change your password once you login'
-        return redirect(url_for('base_blueprint.route_default'))
+        if request.form['code'] == session['code']:
+            #Now the code's match make sure they are only changing the pass of the intended user, aka it has to be the email you send the code to
+            user = User.query.filter_by(email=session['email']).first()
+            if user:
+                newPass = 'temp' + session['code']
+                print(newPass)
+                pwd = hash_pass( newPass )
+                user.password = pwd
+                db.session.commit()
+                session['msg'] = 'Use this password: temp' + session['code'] + ' and please CHANGE YOUR PASSWORD once you login'
+                return redirect(url_for('base_blueprint.route_default'))
+            else:
+                #This means email didn't exist. Probably not possible to get here but just here for usability
+                return render_template( 'login/forgotpass.html', msg=session['email'], errM="Something Went Wrong")
+        else:
+            return render_template( 'login/forgotpass.html', msg=session['email'], errM="Please make sure the code is correct!")
     else:
         return render_template( 'login/forgotpass.html')
     
