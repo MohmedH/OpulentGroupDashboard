@@ -116,12 +116,11 @@ def reset_password():
             #Now the code's match make sure they are only changing the pass of the intended user, aka it has to be the email you send the code to
             user = User.query.filter_by(email=session['email']).first()
             if user:
-                newPass = 'temp' + session['code']
-                print(newPass)
+                newPass = 'tempp' + session['code']
                 pwd = hash_pass( newPass )
                 user.password = pwd
                 db.session.commit()
-                session['msg'] = 'Use this password: temp' + session['code'] + ' and please CHANGE YOUR PASSWORD once you login'
+                session['msg'] = 'Use this password: tempp' + session['code'] + ' and please CHANGE YOUR PASSWORD once you login'
                 return redirect(url_for('base_blueprint.route_default'))
             else:
                 #This means email didn't exist. Probably not possible to get here but just here for usability
