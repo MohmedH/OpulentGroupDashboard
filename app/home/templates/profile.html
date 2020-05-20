@@ -152,12 +152,12 @@
                     </div>
                   </div>
                 </div>
-                <h4 style="color: whitesmoke; font-size: 30px;">-- -- -- --</h4>
+                <h4 id="passverif" style="color: green; font-size: 30px;">-- -- -- --</h4>
                 <div class="row">
                   <div class="col-md-8">
                     <div class="form-group">
                       <label class="bmd-label-floating">New Password</label>
-                      {{ formpassword.passwordNew(class="form-control") }}
+                      {{ formpassword.passwordNew(class="form-control", onkeyup='check();', id="npass") }}
                     </div>
                   </div>
                 </div>
@@ -165,7 +165,7 @@
                   <div class="col-md-8">
                     <div class="form-group">
                       <label class="bmd-label-floating">Verify New Password</label>
-                      {{ formpassword.passwordVerify(class="form-control") }}
+                      {{ formpassword.passwordVerify(class="form-control",, onkeyup='check();', id="npassv") }}
                     </div>
                   </div>
                 </div>
@@ -180,5 +180,18 @@
 
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+<!-- Specific Page JS goes HERE Test -->
+{% block javascripts %}
+
+  <script>
+    var check = function() {
+      if (document.getElementById('npass').value == document.getElementById('npassv').value) {
+        document.getElementById('passverif').style.color = 'green';
+      } else {
+        document.getElementById('passverif').style.color = 'red';
+      }
+    }
+
+  </script>
+
+{% endblock javascripts %}
