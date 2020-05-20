@@ -1,25 +1,27 @@
 version: '3'
 services:
-  appseed-app:
+  app:
+    container_name: app
     restart: always
     env_file: .env
     build: .
-    ports:
-      - "5005:5005"
+    expose:
+      - "5005"
     networks:
       - db_network
       - web_network
   nginx:
+    container_name: nginx
     restart: always
     image: "nginx:latest"
     ports:
-      - "85:85"
+      - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
     networks:
       - web_network
     depends_on: 
-      - appseed-app
+      - app
 networks:
   db_network:
     driver: bridge
