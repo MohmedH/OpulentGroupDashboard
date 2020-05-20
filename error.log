@@ -7168,3 +7168,129 @@ INFO:werkzeug:127.0.0.1 - - [20/May/2020 01:44:37] "[37mGET /profile?__debugger
 INFO:werkzeug:127.0.0.1 - - [20/May/2020 01:44:37] "[37mGET /profile?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
 INFO:werkzeug:127.0.0.1 - - [20/May/2020 01:44:37] "[37mGET /profile?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1[0m" 200 -
 INFO:werkzeug:127.0.0.1 - - [20/May/2020 01:44:37] "[37mGET /profile?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:33] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:33] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:35] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:39] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:42] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:42] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:05:42] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:19:48] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:20:36] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:20:47] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:20:56] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:00] "[35m[1mPOST /reset_password HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:00] "[37mGET /reset_password?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:00] "[37mGET /reset_password?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:00] "[37mGET /reset_password?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:01] "[37mGET /reset_password?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:01] "[37mGET /reset_password?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:01] "[37mGET /reset_password?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:22] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:30] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:34] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:34] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:34] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:39] "[37mPOST /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:46] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:46] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:46] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:46] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:21:52] "[37mGET /profile HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:04] "[37mPOST /profile HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:11] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:11] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:15] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:15] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:15] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:15] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:18] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:18] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:21] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:25] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:22:29] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:25:49] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:26:09] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:26:19] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:26:21] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:26:50] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:26:50] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:26:50] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:11] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:11] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:11] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:11] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:46] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:46] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:48] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:53] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:56] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:56] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:27:56] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:03] "[37mPOST /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:08] "[37mPOST /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:23] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:40] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:42] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:42] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:42] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:50] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:50] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:50] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:51] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:59] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:28:59] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:32:42] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:32:46] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:33:03] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:33:15] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:33:53] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:33:57] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:01] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:07] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:07] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:07] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:15] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:15] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:15] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:15] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:18] "[37mGET /profile HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:24] "[37mPOST /profile HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:30] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:30] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:34] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:34] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:34] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:34:34] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug: * Detected change in '/Users/Hira/Desktop/Dash/OpulentGroupDashboard/app/base/routes.py', reloading
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:38] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:41] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:41] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:44] "[37mGET /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:47] "[37mPOST /reset_password HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:50] "[32mPOST /reset_password HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:50] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:50] "[37mGET /login HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:56] "[32mPOST /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:56] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:56] "[32mGET /login HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:36:56] "[37mGET /index HTTP/1.1[0m" 200 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:37:00] "[32mGET /logout HTTP/1.1[0m" 302 -
+INFO:werkzeug:127.0.0.1 - - [20/May/2020 02:37:00] "[37mGET /login HTTP/1.1[0m" 200 -
