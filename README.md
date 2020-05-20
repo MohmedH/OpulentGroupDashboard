@@ -77,4 +77,4 @@ $ cd flask-dashboard-material-dark
 $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose up -d
 ```
 
-Visit `http://localhost:5000` in your browser. The app should be up & running.
+Visit `http://localhost` or `127.0.0.1` in your browser. The app should be up & running. We expose port 5005 For the application internally, and expose port 80 to the internet. All request come in at port 80 and go through NGINX and are passed along to app:5005 then handeled my gunicorn.
