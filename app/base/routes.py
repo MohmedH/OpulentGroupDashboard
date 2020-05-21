@@ -103,7 +103,7 @@ def reset_password():
     
     if 'next' in request.form:
         #Check if email even exisits, if it does generate a code, save code in session, then email the code out, and return template
-        #If email doesn't exist, no need to save any code, just render the page 
+        #If email doesn't exist, no need to save any code, just render the page, make sure the errM reflects this!
         #session['code'] = str(random.randint(100000000000,999999999999))
         session['code'] = '12345'
         session['email'] = request.form['email']
