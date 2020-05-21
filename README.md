@@ -19,7 +19,8 @@
 
 <br />
 
-## How to use it
+## Local setup for dev / testing
+*It is reccommended to do step on line 49 below. This will help view traffic and requests in terminal.
 
 ```bash
 $ # Get the code
@@ -71,10 +72,14 @@ $ git clone https://github.com/app-generator/flask-dashboard-material-dark.git
 $ cd flask-dashboard-material-dark
 ```
 
+>You will have to go in and change the server_name in the /nginx/{name}.config file. If you would like to access via localhost, or IP of the machine (i.e without domain name) just ommit this line
+
 > Start the app in Docker
 
 ```bash
 $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose up -d
 ```
+
+*If you used server_name and it is set up properly, you will be able to access this site directly at that domain.
 
 Visit `http://localhost` or `127.0.0.1` in your browser. The app should be up & running. We expose port 5005 For the application internally, and expose port 80 to the internet. All request come in at port 80 and go through NGINX and are passed along to app:5005 then handeled my gunicorn.
