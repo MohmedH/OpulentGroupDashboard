@@ -9,6 +9,7 @@ __pycache__/
 # database & logs
 #*.db Uncomment when you don't want database.db to sync up across all repos
 *.log
+error.log
 
 # venv
 env
