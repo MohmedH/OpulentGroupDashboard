@@ -40,11 +40,14 @@ def index():
 
 
 #If you ever update email, that is the pm key that connects all the other tables, so you must update that accordingly
-@blueprint.route('/profile', methods=['GET', 'POST'])
+@blueprint.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required
-def page_user():
+def page_user(username):
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
+
+    if username != current_user.username:
+        return render_template('page-403.html'), 403
 
     #Use the bottom after a sussessful password reset or any message for that matter
     #return render_template('profile.html', passmsg="Success")
