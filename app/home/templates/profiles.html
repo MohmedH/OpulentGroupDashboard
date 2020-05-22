@@ -206,7 +206,7 @@
         contentType: "application/json",
         success: function(){
             console.log( 'Worked' );
-            md.showNotification('top','center','success','Saved Successfully, you can refresh to view changes!')
+            md.showNotification('top','center','success','Saved User '+ data['username'] + ' Successfully, you can refresh to view changes!')
         },
         error: function( jqXhr, textStatus, errorThrown ){
             console.log( errorThrown );

@@ -292,17 +292,17 @@ md = {
     }
   },
 
-  showNotification: function(from, align, type, messages) {
+  showNotification: function(from, align, colorr, messages) {
     type = ['', 'info', 'danger', 'success', 'warning', 'primary'];
 
     color = Math.floor((Math.random() * 5) + 1);
 
     $.notify({
       icon: "add_alert",
-      messages: "Welcome to <b>Material Dashboard</b> - a beautiful freebie for every web develo."
+      message: messages
 
     }, {
-      type: type,
+      type: colorr,
       timer: 3000,
       placement: {
         from: from,
