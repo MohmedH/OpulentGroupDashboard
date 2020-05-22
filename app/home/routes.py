@@ -8,10 +8,11 @@ from app.home import blueprint
 from app.base.util import verify_pass, hash_pass
 from app.base.models import User, Portfolio
 from app.base.forms import ChangePassword, UpdateProfile
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, jsonify, Response, Flask
 from flask_login import login_required, current_user
 from app import login_manager, db
 from jinja2 import TemplateNotFound
+import json
 
 @blueprint.route('/index')
 @login_required
@@ -38,6 +39,40 @@ def index():
 
     return render_template('index.html', chart = dataDailySalesChart, investAMT=investmentAmt)
 
+@blueprint.route('/profiles', methods=['GET', 'POST', 'PUT'])
+@login_required
+def profile():
+    if  current_user.role != 'admin':
+        return render_template('page-403.html'), 403
+    else:
+        if request.method == 'POST':
+            content = request.get_json()
+            #print(content['moe'].keys())
+            '''
+            print(request.form.keys())
+            test = request.form
+            print(request.form.get('moe[age]'))
+            for t in test:
+                print(t)
+            '''
+        
+        temp = {'moe':{'invested':'100','admin':'no'}, 'Toe':{'invested':'100','admin':'no'}}
+        return render_template('profiles.html', testt=temp)
+
+@blueprint.route('/test', methods=['GET'])
+def test():
+
+    data = {'moe':{'invested':'100','admin':'no'}, 'Toe':{'invested':'100','admin':'no'}}
+
+    response = Response(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+
 
 #If you ever update email, that is the pm key that connects all the other tables, so you must update that accordingly
 @blueprint.route('/profile/<username>', methods=['GET', 'POST'])
@@ -56,6 +91,7 @@ def page_user(username):
     
     #If the username is not unique this falls apart as anyone can change username to match and then change that password.
     if 'changePass' in request.form:
+        print(request.form)
         user = User.query.filter_by(username=current_user.username).first()
         passwordOld = request.form['passwordOld']
         passwordNew = request.form['passwordNew']
