@@ -11,7 +11,7 @@
         <h3 class="card-header text-center font-weight-bold text-uppercase py-4" style="color: white; font-size: 50px;">Users Table</h3>
         <div class="card-body"style="background-color:rgb(107, 90, 74)">
         <div id="table" class="table-editable">
-            <span class="table-add float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded"><i>New User</i></a></span>
+            <span class="table-add float-right mb-3 mr-2"><a href="#" class="btn btn-success btn-rounded"><i>New User</i></a></span>
             <table class="table table-bordered table-responsive-md table-striped text-center">
             <thead>
                 <tr>
@@ -122,7 +122,11 @@
         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Optional</td>
         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">regular</td>
         <td>
-            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-md my-0 waves-effect waves-light">Remove</button></span>
+        </td>
+        <td>
+            <span class="table-save"><button type="button"
+                class="btn btn-success btn-rounded btn-md my-0">Save</button></span>
         </td>
         </tr>`;
     $('tbody').append(newTr);
@@ -177,7 +181,7 @@
     const headers = [];
     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
     $tds = $row.find("td");             // Finds all children <td> elements
-    const h = {};
+    const data = {};
 
     //First part is to get the headers, shouldnt change but incase they ever do
     $($rows.shift()).find('th:not(:empty)').each(function () {
@@ -190,7 +194,23 @@
    $.each($tds, function(i) {         // Visits every single <td> element
         if ($(this).hasClass("pt-3-half")){  // Check to make sure its the text fields
             //console.log($(this).text());   // Prints out the text within the <td>
-            h[headers[i]] = $(this).text()
+            data[headers[i]] = $(this).text()
+        }
+    });
+
+    //Let do the actual saving! for now it goes to the same place as the get
+    $.ajax({
+        url: '/profiles',
+        type: 'put',
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function(){
+            console.log( 'Worked' );
+            md.showNotification('top','center','success','Saved Successfully, you can refresh to view changes!')
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+            alert("Something went wrong! Changes were not saved. Try again")
         }
     });
 
