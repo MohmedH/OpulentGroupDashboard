@@ -7,108 +7,92 @@
 <div class="row">
 
     <!-- Editable table -->
-    <div class="card">
-        <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Editable table</h3>
-        <div class="card-body">
+    <div class="card" style="background-color:rgb(107, 90, 74)">
+        <h3 class="card-header text-center font-weight-bold text-uppercase py-4" style="color: white; font-size: 50px;">Users Table</h3>
+        <div class="card-body"style="background-color:rgb(107, 90, 74)">
         <div id="table" class="table-editable">
-            <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-success"><i
-                class="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+            <span class="table-add float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded"><i>New User</i></a></span>
             <table class="table table-bordered table-responsive-md table-striped text-center">
             <thead>
                 <tr>
-                <th class="text-center">Person Name</th>
-                <th class="text-center">Age</th>
-                <th class="text-center">Company Name</th>
-                <th class="text-center">Country</th>
-                <th class="text-center">City</th>
-                <th class="text-center">Sort</th>
-                <th class="text-center">Remove</th>
+                <th class="text-center"style="color: black; font-size: large;"><b>Username</b></th>
+                <th class="text-center"style="color: black; font-size: large;"><b>Email</b></th>
+                <th class="text-center" style="color: black; font-size: large;"><b>First Name</b></th>
+                <th class="text-center"style="color: black; font-size: large;"><b>Last Name</b></th>
+                <th class="text-center"style="color: black; font-size: large;"><b>Role</b></th>
+                <th class="text-center"style="color: black; font-size: large;"><b>Remove</b></th>
+                <th class="text-center"style="color: black; font-size: large;"><b>Save</b></th>
                 </tr>
             </thead>
             <tbody>
+                <!--
                 <tr>
                 <td class="pt-3-half" contenteditable="true">Aurelia Vega</td>
                 <td class="pt-3-half" contenteditable="true">30</td>
                 <td class="pt-3-half" contenteditable="true">Deepends</td>
                 <td class="pt-3-half" contenteditable="true">Spain</td>
                 <td class="pt-3-half" contenteditable="true">Madrid</td>
-                <td class="pt-3-half">
-                    <span class="table-up"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-up"
-                        aria-hidden="true"></i></a></span>
-                    <span class="table-down"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-down"
-                        aria-hidden="true"></i></a></span>
-                </td>
                 <td>
                     <span class="table-remove"><button type="button"
                         class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
                 </td>
                 </tr>
-                <!-- This is our clonable table line -->
+                -->
+                <!-- This is our clonable table line 
                 <tr>
                 <td class="pt-3-half" contenteditable="true">Guerra Cortez</td>
                 <td class="pt-3-half" contenteditable="true">45</td>
                 <td class="pt-3-half" contenteditable="true">Insectus</td>
                 <td class="pt-3-half" contenteditable="true">USA</td>
                 <td class="pt-3-half" contenteditable="true">San Francisco</td>
-                <td class="pt-3-half">
-                    <span class="table-up"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-up"
-                        aria-hidden="true"></i></a></span>
-                    <span class="table-down"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-down"
-                        aria-hidden="true"></i></a></span>
-                </td>
                 <td>
                     <span class="table-remove"><button type="button"
                         class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
                 </td>
                 </tr>
+                -->
                 <!-- This is our clonable table line -->
-                {% for name, prot in testt.items() %}
+                {% for users, userinfo in test.items() %}
                     <tr>
-                        <td class="pt-3-half" contenteditable="true">{{name}}</td>
-                        <td class="pt-3-half" contenteditable="true">26</td>
-                        <td class="pt-3-half" contenteditable="true">Isotronic</td>
-                        <td class="pt-3-half" contenteditable="true">Germany</td>
-                        <td class="pt-3-half" contenteditable="true">Frankfurt am Main</td>
-                        <td class="pt-3-half">
-                            <span class="table-up"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-up"
-                                aria-hidden="true"></i></a></span>
-                            <span class="table-down"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-down"
-                                aria-hidden="true"></i></a></span>
-                        </td>
+                        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"><b>{{users}}</b></td>
+                        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"><b>{{userinfo.email}}</b></td>
+                        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"><b>n/a</b></td>
+                        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"><b>n/a</b></td>
+                        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">{{userinfo.role}}</td>
                         <td>
                             <span class="table-remove"><button type="button"
-                                class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                                class="btn btn-danger btn-rounded btn-md my-0">Remove</button></span>
+                        </td>
+                        <td>
+                            <span class="table-save"><button type="button"
+                                class="btn btn-success btn-rounded btn-md my-0">Save</button></span>
                         </td>
                     </tr>
 
                 
                 {% endfor %}
                 
-                <!-- This is our clonable table line -->
+                <!-- This is our clonable table line
                 <tr class="hide">
                 <td class="pt-3-half" contenteditable="true">Elisa Gallagher</td>
                 <td class="pt-3-half" contenteditable="true">31</td>
                 <td class="pt-3-half" contenteditable="true">Portica</td>
                 <td class="pt-3-half" contenteditable="true">United Kingdom</td>
                 <td class="pt-3-half" contenteditable="true">London</td>
-                <td class="pt-3-half">
-                    <span class="table-up"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-up"
-                        aria-hidden="true"></i></a></span>
-                    <span class="table-down"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-down"
-                        aria-hidden="true"></i></a></span>
-                </td>
                 <td>
                     <span class="table-remove"><button type="button"
                         class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
                 </td>
                 </tr>
+                 -->
             </tbody>
             </table>
         </div>
         </div>
 
         <span><button id='export-btn' type="button"
-            class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+            class="btn btn-success btn-rounded btn-lg my-0">Save Changes</button>
+        </span>
   </div>
   <!-- Editable table -->
 
@@ -123,19 +107,35 @@
   <script>
  
 
-const $tableID = $('#table');
+ const $tableID = $('#table');
  const $BTN = $('#export-btn');
  const $EXPORT = $('#export');
 
 
  $('.table-add').on('click', 'i', () => {
 
-   const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
+    var newTr = `
+        <tr class="hide">
+        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Required*</td>
+        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Required*</td>
+        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Optional</td>
+        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Optional</td>
+        <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">regular</td>
+        <td>
+            <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+        </td>
+        </tr>`;
+    $('tbody').append(newTr);
 
-   if ($tableID.find('tbody tr').length === 0) {
+   //const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
 
-     $('tbody').append(newTr);
-   }
+   //if ($tableID.find('tbody tr').length === 0) {
+
+    //alert("NEED TABLE")
+    // $('tbody').append(newTr);
+     
+   //}
+   /*Use this to pull data from the /test endpoint
    $.ajax({
         url: '/test',
         dataType: 'json',
@@ -147,15 +147,11 @@ const $tableID = $('#table');
            }
            var newTr = `
                 <tr class="hide">
-                <td id='tdname' class="pt-3-half" contenteditable="true"></td>
-                <td class="pt-3-half" contenteditable="true">`+testtt+`</td>
-                <td class="pt-3-half" contenteditable="true"></td>
-                <td class="pt-3-half" contenteditable="true"></td>
-                <td class="pt-3-half" contenteditable="true"></td>
-                <td class="pt-3-half">
-                    <span class="table-up"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-up" aria-hidden="true"></i></a></span>
-                    <span class="table-down"><a href="#!" class="indigo-text"><i class="fas fa-long-arrow-alt-down" aria-hidden="true"></i></a></span>
-                </td>
+                <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">`+testtt+`</td>
+                <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
                 <td>
                     <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
                 </td>
@@ -166,14 +162,41 @@ const $tableID = $('#table');
             console.log( errorThrown );
         }
     });
-    
-   //$tableID.find('table').append($clone);
+    */
+
  });
 
  $tableID.on('click', '.table-remove', function () {
+    
    $(this).parents('tr').detach();
  });
 
+ $tableID.on('click', '.table-save', function () {
+    
+    const $rows = $tableID.find('tr:not(:hidden)');
+    const headers = [];
+    var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+    $tds = $row.find("td");             // Finds all children <td> elements
+    const h = {};
+
+    //First part is to get the headers, shouldnt change but incase they ever do
+    $($rows.shift()).find('th:not(:empty)').each(function () {
+        if($(this).text().toLowerCase() != "remove" && $(this).text().toLowerCase() != "save" ){
+            //console.log(headers)
+            headers.push($(this).text().toLowerCase());
+        }
+   });
+   //Now we have the table headers!
+   $.each($tds, function(i) {         // Visits every single <td> element
+        if ($(this).hasClass("pt-3-half")){  // Check to make sure its the text fields
+            //console.log($(this).text());   // Prints out the text within the <td>
+            h[headers[i]] = $(this).text()
+        }
+    });
+
+   //console.log(h) Object View in console :)
+    
+ });
  
  // A few jQuery helpers for exporting only
  jQuery.fn.pop = [].pop;
@@ -185,13 +208,12 @@ const $tableID = $('#table');
    const headers = [];
    const data = {};
 
+
    // Get the headers (add special header logic here)
    $($rows.shift()).find('th:not(:empty)').each(function () {
-        if($(this).text().toLowerCase() != "sort"){
-            if($(this).text().toLowerCase() != "remove"){
-                console.log(headers)
-                headers.push($(this).text().toLowerCase());
-            }
+        if($(this).text().toLowerCase() != "remove" && $(this).text().toLowerCase() != "save"){
+            //console.log(headers)
+            headers.push($(this).text().toLowerCase());
         }
    });
 
@@ -207,18 +229,26 @@ const $tableID = $('#table');
        //console.log(h['person name'])
        
      });
-     data[h['person name']] = h
+     if(h['username'] == 'Required*' || h['username'].length < 3)
+     {
+        alert("Username must be filled out")
+     }
+     data[h['username']] = h
    });
 
    // Output the result
    $EXPORT.text(JSON.stringify(data));
    $.ajax({
         url: '/profiles',
-        type: 'post',
+        type: 'put',
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function(){
             console.log( 'Worked' );
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+            alert("Something went wrong! Changes were not saved. Try again")
         }
     });
  });

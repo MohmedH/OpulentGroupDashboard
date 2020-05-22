@@ -45,9 +45,9 @@ def profile():
     if  current_user.role != 'admin':
         return render_template('page-403.html'), 403
     else:
-        if request.method == 'POST':
+        if request.method == 'POST' or request.method == 'PUT':
             content = request.get_json()
-            #print(content['moe'].keys())
+            print(content)
             '''
             print(request.form.keys())
             test = request.form
@@ -56,8 +56,15 @@ def profile():
                 print(t)
             '''
         
-        temp = {'moe':{'invested':'100','admin':'no'}, 'Toe':{'invested':'100','admin':'no'}}
-        return render_template('profiles.html', testt=temp)
+        users = User.query.all()
+        temp = {}
+        for user in users:
+            temp[user] = {
+                'username':user,
+                'email':user.email,
+                'role':user.role,
+            }
+        return render_template('profiles.html', test=temp)
 
 @blueprint.route('/test', methods=['GET'])
 def test():
