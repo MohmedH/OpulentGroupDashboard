@@ -66,6 +66,55 @@ def profile():
             }
         return render_template('profiles.html', test=temp)
 
+@blueprint.route('/profiles/<action>', methods=['POST', 'PUT', 'DELETE'])
+@login_required
+def profileActions(action):
+    if  current_user.role != 'admin':
+        return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
+
+    if request.method == 'POST' or request.method == 'PUT':
+        content = request.get_json()
+        print(content)
+
+        user = User.query.filter_by(username=content['old']['username']).first()
+
+        if user:
+            #If I query the new username and find it, and it isnt the same as your old, fail 
+            if User.query.filter_by(username=content['new']['username']).first() and content['old']['username'] != content['new']['username']:
+                return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
+
+            if User.query.filter_by(email=content['new']['email']).first() and content['old']['email'] != content['new']['email']:
+                return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
+
+            port = Portfolio.query.filter_by(email=content['old']['email']).first()
+            user.username = content['new']['username']
+            user.email = content['new']['email']
+            port.email = content['new']['email']
+            db.session.commit() 
+        else:
+            userEmailCheck = User.query.filter_by(email=content['new']['email']).first()
+            if userEmailCheck:
+                return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
+            else:
+                userNew = User()
+                userNew.username = content['new']['username']
+                userNew.email = content['new']['email']
+                pwd = hash_pass( 'pass' )
+                userNew.password = pwd
+
+                portNew = Portfolio()
+                portNew.email = content['new']['email']
+                portNew.invested = 0
+
+                db.session.add(userNew)
+                db.session.add(portNew)
+                db.session.commit()
+
+        #Add the user or update the user then send 200, 
+        #return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
+        return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+            
+
 @blueprint.route('/test', methods=['GET'])
 def test():
 

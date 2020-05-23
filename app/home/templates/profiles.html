@@ -7,11 +7,12 @@
 <div class="row">
 
     <!-- Editable table -->
-    <div class="card" style="background-color:rgb(107, 90, 74)">
+    <div class="card" >
         <h3 class="card-header text-center font-weight-bold text-uppercase py-4" style="color: white; font-size: 50px;">Users Table</h3>
         <div class="card-body"style="background-color:rgb(107, 90, 74)">
         <div id="table" class="table-editable">
-            <span class="table-add float-right mb-3 mr-2"><a href="#" class="btn btn-success btn-rounded"><i>New User</i></a></span>
+            <h2>Changes a</h2>
+            <span class="table-add float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded"><i>New User</i></a></span>
             <table class="table table-bordered table-responsive-md table-striped text-center">
             <thead>
                 <tr>
@@ -61,11 +62,15 @@
                         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">{{userinfo.role}}</td>
                         <td>
                             <span class="table-remove"><button type="button"
-                                class="btn btn-danger btn-rounded btn-md my-0">Remove</button></span>
+                                class="btn btn-danger btn-rounded btn-md my-0" disabled>Remove</button></span>
                         </td>
                         <td>
                             <span class="table-save"><button type="button"
                                 class="btn btn-success btn-rounded btn-md my-0">Save</button></span>
+                        </td>
+                        <td>
+                            <span class="table-edit"><button type="button"
+                                class="btn btn-success btn-rounded btn-sm my-0">Edit</button></span>
                         </td>
                     </tr>
 
@@ -110,6 +115,7 @@
  const $tableID = $('#table');
  const $BTN = $('#export-btn');
  const $EXPORT = $('#export');
+ const dataSend = {}
 
 
  $('.table-add').on('click', 'i', () => {
@@ -127,6 +133,10 @@
         <td>
             <span class="table-save"><button type="button"
                 class="btn btn-success btn-rounded btn-md my-0">Save</button></span>
+        </td>
+        <td>
+            <span class="table-edit"><button type="button"
+                class="btn btn-success btn-rounded btn-sm my-0">Edit</button></span>
         </td>
         </tr>`;
     $('tbody').append(newTr);
@@ -170,6 +180,44 @@
 
  });
 
+ /*
+ $('.table-edit').on('click', () =>{
+    //$('.table-remove').setAttribute("disabled", true);
+
+ });
+ */
+
+ $tableID.on('click', '.table-edit', function () {
+    
+    const $rows = $tableID.find('tr:not(:hidden)');
+    const headers = [];
+    var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+    $tds = $row.find("td");             // Finds all children <td> elements
+    const data = {};
+
+    //First part is to get the headers, shouldnt change but incase they ever do
+    $($rows.shift()).find('th:not(:empty)').each(function () {
+        if($(this).text().toLowerCase() != "remove" && $(this).text().toLowerCase() != "save" ){
+            //console.log(headers)
+            headers.push($(this).text().toLowerCase());
+        }
+        else{
+            //console.log($(this).hide)
+        }
+   });
+   //Now we have the table headers!
+   $.each($tds, function(i) {         // Visits every single <td> element
+        if ($(this).hasClass("pt-3-half")){  // Check to make sure its the text fields
+            //console.log($(this).text());   // Prints out the text within the <td>
+            data[headers[i]] = $(this).text();
+        }
+    });
+
+    dataSend['old'] = data
+    console.log(dataSend)
+    
+  });
+
  $tableID.on('click', '.table-remove', function () {
     
    $(this).parents('tr').detach();
@@ -199,10 +247,11 @@
     });
 
     //Let do the actual saving! for now it goes to the same place as the get
+    dataSend['new'] = data
     $.ajax({
-        url: '/profiles',
+        url: '/profiles/save',
         type: 'put',
-        data: JSON.stringify(data),
+        data: JSON.stringify(dataSend),
         contentType: "application/json",
         success: function(){
             console.log( 'Worked' );
@@ -214,7 +263,7 @@
         }
     });
 
-   //console.log(h) Object View in console :)
+   //console.log(data) Object View in console :)
     
  });
  
