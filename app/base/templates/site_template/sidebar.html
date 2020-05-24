@@ -36,7 +36,7 @@
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="/ui-tables">
+              <a class="nav-link" href="/disclosure">
                 <i class="material-icons">info_outline</i>
                 <p>Information</p>
               </a>
@@ -44,14 +44,14 @@
             <li class="nav-item ">
               <a class="nav-link" href=/profile/{{current_user.username}}>
                   <i class="material-icons">person</i>
-                  <p>User Profile</p>
+                  <p>My Profile</p>
               </a>
             </li>
             <!--ONLY SHOW BOTTOM FOR ADMINS-->
             {% if current_user.u_role == 'admin' %}
             <li class="nav-item ">
-              <a class="nav-link" href="/ui-tables">
-                <i class="material-icons">content_paste</i>
+              <a class="nav-link" href="/profiles">
+                <i class="material-icons">people</i>
                 <p>User List</p>
               </a>
             </li>
