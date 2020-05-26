@@ -56,6 +56,9 @@ def profile():
 def profileActions(action):
     if  current_user.role != 'admin':
         return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
+    
+    if action != 'save':
+        return json.dumps({'Error':'Not Found'}), 404, {'ContentType':'application/json'}
 
     if request.method == 'POST' or request.method == 'PUT':
         content = request.get_json()
