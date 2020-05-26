@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     email = Column(String, unique=True)
     password = Column(Binary)
     role = Column(String, default='regular')
+    name = Column(String)
 
     def __init__(self, **kwargs):
         setattr(self, 'role', 'regular')
