@@ -59,6 +59,20 @@ $
 $ # Access the dashboard in browser: http://127.0.0.1:5000/
 ```
 
+Any Changes To The DB will require Alembic Migrations:
+```
+$ flask db migrate  # To detect automatically all the changes.
+$ flask db upgrade  # To apply all the changes.
+
+# The above commands will save, and update the changes to the user model.
+# Because we do not commit DB changes, for these to be applied run this..
+
+$ flask db stamp head  # To set the revision in the database to the head, without performing any migrations. You can change head to the required change you want.
+
+#Followed by the first two commands to bring it all up to date.
+```
+
+
 <br />
 
 ## Docker execution
