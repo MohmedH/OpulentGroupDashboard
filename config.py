@@ -39,11 +39,11 @@ class ProductionConfig(Config):
 
     # PostgreSQL database
     SQLALCHEMY_DATABASE_URI = 'postgresql://{}:{}@{}:{}/{}'.format(
-        environ.get('APPSEED_DATABASE_USER', 'appseed'),
-        environ.get('APPSEED_DATABASE_PASSWORD', 'appseed'),
-        environ.get('APPSEED_DATABASE_HOST', 'db'),
-        environ.get('APPSEED_DATABASE_PORT', 5432),
-        environ.get('APPSEED_DATABASE_NAME', 'appseed')
+        environ.get('POSTGRES_USER', 'appseed'),
+        environ.get('POSTGRES_PASSWORD', 'appseed'),
+        environ.get('POSTGRES_HOST', 'db'),
+        environ.get('POSTGRES_PORT', 5432),
+        environ.get('POSTGRES_DB', 'appseed')
     )
 
 
