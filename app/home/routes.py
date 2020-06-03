@@ -77,6 +77,7 @@ def profileActions(action):
                 port = Portfolio.query.filter_by(email=user.email).first()
                 user.username = content['username']
                 user.email = content['email']
+                user.name = content['name']
                 port.email = content['email']
                 db.session.commit()
 
@@ -93,6 +94,7 @@ def profileActions(action):
                 userNew = User()
                 userNew.username = content['username']
                 userNew.email = content['email']
+                userNew.name = content['name']
                 pwd = hash_pass( 'pass' )
                 userNew.password = pwd
 
@@ -186,9 +188,10 @@ def page_user(username):
             return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, passmsg=passmsgg)
         #This is for updating information to the profile, **!!IF EMAIL CHANGES YOU MUST CHANGE IN ALL TABLES!!**
         elif 'updateProfile' in request.form:
-            print(request.form)
+            #print(request.form)
             username  = request.form['username']
             email     = request.form['email'   ]
+            name      = request.form['name'    ]
             
             #First Check make sure the user name in the form is different from current, meaning they want to change it
             if username != current_user.username:
@@ -224,13 +227,19 @@ def page_user(username):
                 portfolio = Portfolio.query.filter_by(email=current_user.email).first()
                 user.email = email
                 portfolio.email = email
-        
+            
+            user.name = name
+            db.session.commit()
+            return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, profilemsg='Changed Info Successfully!')
+            
+            ''' OLD WAY
             if changeEmail or changeUser:
                 #Commit the changes!
                 db.session.commit()
                 return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, profilemsg='Changed Info Successfully!')
             else:
                 return render_template('profile.html', formpassword=pass_form, formprofile=profile_form)
+            '''
         else:
             #Default page render, just want to see what's going on
             return render_template('profile.html', formpassword=pass_form, formprofile=profile_form)

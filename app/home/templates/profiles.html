@@ -36,7 +36,7 @@
                 <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.id}}</b></td>
                 <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.username}}</td>
                 <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.email}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">N/A</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.name}}</td>
                 <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.role}}</td>
                 <td>
                     <span class="button-save-test">
@@ -68,7 +68,7 @@
   <script>
     $(document).ready(function(){
       $('#tableT').after('<div id="nav"></div>');
-      var rowsShown = 2;
+      var rowsShown = 7;
       var rowsTotal = $('#tableT tbody tr').length;
       var numPages = rowsTotal/rowsShown;
       for(i = 0;i < numPages;i++) {

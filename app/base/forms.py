@@ -27,3 +27,4 @@ class ChangePassword(FlaskForm):
 class UpdateProfile(FlaskForm):
     username = TextField('Username'     , id='username_create' , validators=[DataRequired()])
     email    = TextField('Email'        , id='email_create'    , validators=[DataRequired(), Email()])
+    name     = TextField('Name'         , id='email_create'    , validators=[DataRequired()])
