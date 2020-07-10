@@ -21,7 +21,7 @@
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="/ui-tables">
+              <a class="nav-link" href="/withdraw">
                 <i class="material-icons">attach_money</i>
                 <p>Withdraw</p>
               </a>
@@ -44,6 +44,7 @@
                   <p>My Profile</p>
               </a>
             </li>
+            
             <!--ONLY SHOW BOTTOM FOR ADMINS-->
             {% if current_user.u_role == 'admin' %}
             <li class="nav-item ">

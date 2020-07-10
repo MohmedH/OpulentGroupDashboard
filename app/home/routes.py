@@ -39,6 +39,13 @@ def index():
 
     return render_template('index.html', chart = dataDailySalesChart, investAMT=investmentAmt)
 
+@blueprint.route('/withdraw', methods=['GET','POST'])
+@login_required
+def with_draw():
+    print('Going through route')
+    return render_template('withdraw.html')
+
+
 @blueprint.route('/profiles', methods=['GET'])
 @login_required
 def profile():
@@ -134,21 +141,6 @@ def profileActions(action):
 
         except:
             return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
-
-@blueprint.route('/test', methods=['GET'])
-def test():
-
-    data = {'moe':{'invested':'100','admin':'no'}, 'Toe':{'invested':'100','admin':'no'}}
-
-    response = Response(
-        response=json.dumps(data),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
-
-
-
 
 #If you ever update email, that is the pm key that connects all the other tables, so you must update that accordingly
 @blueprint.route('/profile/<username>', methods=['GET', 'POST'])
