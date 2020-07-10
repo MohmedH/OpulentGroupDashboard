@@ -98,9 +98,10 @@
                 </div>
             </div>
           </div>
-          <button type="submit" name="updateProfile" class="btn btn-primary pull-right">Submit</button>
           <div class="clearfix"></div>
         </form>
+        <button class="btn btn-primary pull-right" onclick="myFunction()">Submit</button>
+        
 
       </div>
     </div>
@@ -124,4 +125,25 @@
 
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+<script>
+    function myFunction() {
+        $.ajax({
+                url: '/withdraw',
+                type: 'POST',
+                data: JSON.stringify("hello"),
+                contentType: "application/json",
+                success: function(){
+                    md.showNotification('top','center','success','Withdraw Request Successful, Refresh Page.')
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    md.showNotification('top','center','danger','Error! Not Implemented Yet!')
+                }
+            });
+    }
+    
+
+</script>
+
+{% endblock javascripts %}

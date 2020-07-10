@@ -42,7 +42,12 @@ def index():
 @blueprint.route('/withdraw', methods=['GET','POST'])
 @login_required
 def with_draw():
-    print('Going through route')
+   
+    if request.method == 'POST':
+        return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
+        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+
+    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
     return render_template('withdraw.html')
 
 
