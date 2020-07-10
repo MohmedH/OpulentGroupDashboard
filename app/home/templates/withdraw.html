@@ -98,10 +98,10 @@
                 </div>
             </div>
           </div>
+          <button type="submit" name="updateProfile" class="btn btn-primary pull-right">Submit</button>
           <div class="clearfix"></div>
         </form>
-        <button class="btn btn-primary pull-right" onclick="myFunction()">Submit</button>
-        
+        <button class="btn btn-primary btn-block" onclick="myFunction()">works b/c outside form</button>
 
       </div>
     </div>
@@ -135,7 +135,7 @@
                 data: JSON.stringify("hello"),
                 contentType: "application/json",
                 success: function(){
-                    md.showNotification('top','center','success','Withdraw Request Successful, Refresh Page.')
+                    md.showNotification('top','center','success','Withdraw Request Successful')
                 },
                 error: function( jqXhr, textStatus, errorThrown ){
                     md.showNotification('top','center','danger','Error! Not Implemented Yet!')

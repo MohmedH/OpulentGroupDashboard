@@ -44,6 +44,7 @@ def index():
 def with_draw():
    
     if request.method == 'POST':
+        print(request.get_json())
         return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
         #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
 
