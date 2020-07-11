@@ -64,6 +64,7 @@ class Portfolio(db.Model):
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
+    name = Column(String)
     invested = Column(Integer)
 
     def __init__(self, **kwargs):

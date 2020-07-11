@@ -104,6 +104,7 @@ def profileActions(action):
                 user.email = content['email']
                 user.name = content['name']
                 port.email = content['email']
+                port.name = content['name']
                 db.session.commit()
 
 
@@ -125,6 +126,7 @@ def profileActions(action):
 
                 portNew = Portfolio()
                 portNew.email = content['email']
+                portNew.name = content['name']
                 portNew.invested = 0
 
                 db.session.add(userNew)
@@ -230,6 +232,7 @@ def page_user(username):
 
             #UPDATE THE INFO HERE
             user = User.query.filter_by(username=current_user.username).first()
+            portfolio = Portfolio.query.filter_by(email=current_user.email).first()
 
             #Change username in USER table
             if changeUser:
@@ -237,11 +240,11 @@ def page_user(username):
             
             #Change email in USER and PORTFOLIO tables
             if changeEmail:
-                portfolio = Portfolio.query.filter_by(email=current_user.email).first()
                 user.email = email
                 portfolio.email = email
             
             user.name = name
+            portfolio.name = name
 
             db.session.commit()
             #return redirect(url_for('page_user', formpassword=pass_form, formprofile=profile_form, username=current_user.username))
