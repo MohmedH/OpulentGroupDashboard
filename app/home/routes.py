@@ -172,14 +172,14 @@ def page_user(username):
             passwordNew = request.form['passwordNew']
             passwordVerify = request.form['passwordVerify']
             if user and verify_pass( passwordOld, user.password):
-                if passwordNew == passwordVerify:
+                if passwordNew == passwordVerify and len(passwordNew) > 5:
                     #Change the password here!
                     pwd = hash_pass( passwordNew )
                     user.password = pwd
                     db.session.commit()
                     passmsgg = 'Successfully Changed Password!'
                 else:
-                    passmsgg = 'error New passwords did not match!'
+                    passmsgg = 'error please make sure passwords match, and are 6 characters atleast'
             else:
                 passmsgg = 'error please make sure you entered the current password properly'
 
@@ -192,7 +192,7 @@ def page_user(username):
             name      = request.form['name'    ]
             
             #First Check make sure the user name in the form is different from current, meaning they want to change it
-            if username != current_user.username:
+            if username != current_user.username and len(username) > 3:
                 #Now Query that user and make sure that it does not already exist
                 user = User.query.filter_by(username=username).first()
                 if user:
@@ -204,7 +204,7 @@ def page_user(username):
                 changeUser = False
 
 
-            if email != current_user.email:   
+            if email != current_user.email and len(email) > 3:   
                 user = User.query.filter_by(email=email).first()
                 if user:
                     return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, profilemsg='Error Email already exists')
@@ -212,6 +212,9 @@ def page_user(username):
                     changeEmail = True
             else:
                 changeEmail = False
+
+            if len(name) < 2:
+                return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, profilemsg='Error Name must be atleast 2 characters')
 
             #UPDATE THE INFO HERE
             user = User.query.filter_by(username=current_user.username).first()
@@ -227,8 +230,11 @@ def page_user(username):
                 portfolio.email = email
             
             user.name = name
+
             db.session.commit()
+            #return redirect(url_for('page_user', formpassword=pass_form, formprofile=profile_form, username=current_user.username))
             return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, profilemsg='Changed Info Successfully!')
+            
             
             ''' OLD WAY
             if changeEmail or changeUser:
