@@ -51,6 +51,18 @@ def with_draw():
     #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
     return render_template('withdraw.html')
 
+@blueprint.route('/partners', methods=['GET'])
+@login_required
+def partners():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+        else:
+            users = Portfolio.query.all()
+            return render_template('partners.html', partner=users)
+    except:
+        return render_template('page-500.html'), 500
+
 
 @blueprint.route('/profiles', methods=['GET'])
 @login_required
