@@ -23,7 +23,7 @@ $('.table-add-new').on('click', 'i', () => {
         </td>
         </tr>`;
 
-    $('tbody').append(newTr);
+    $('#tableT').find('tbody').append(newTr);
 
 });
 

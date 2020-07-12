@@ -5,12 +5,35 @@
 {% block content %}
 
   <h3 style="color: white;"><b>Deposit History</b></h3>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Help Me!
+  </button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tips</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <p>-Please Enter Numerical Amount i.e $5,000 enter as 5000 For New Deposits.</p>
+            <p>-You may only have 1 active Pending request every 7 days.</p>
+            <p>-The Amount field you are able to always edit. If it's pending, you can change and save the new amount</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
 
     <div class="col-md-12">
       <div class="card card-plain">
         <div class="card-header card-header-primary">
-          <h4 class="card-title mt-0">Please Enter Numerical Amount i.e $5,000 enter as 5000 For New Deposit</h4>
+          <h4 class="card-title mt-0">Pending Deposits</h4>
         </div>
         <div class="card-body">
           <div id="tableT" class="table-editable table-responsive">
@@ -18,7 +41,6 @@
             <table class="table table-hover">
               <thead>
                 <th>Date</th>
-                <th>Name</th>
                 <th>Deposit Amount</th>
                 <th>Status</th>
                 <th>Submit</th>
@@ -27,11 +49,11 @@
               </thead>
               <tbody>
   
+                {% for users in pending %}
                   <tr>
-                  <td class="pt-3-half" style="color: white;" contenteditable="false"><b>07/12/20</b></td>
-                  <td class="pt-3-half" style="color: white;" contenteditable="true">Admin</td>
-                  <td class="pt-3-half" style="color: white;" contenteditable="true">$5000</td>
-                  <td class="pt-3-half" style="color: white;" contenteditable="true">Approved</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.date}}</b></td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="true">{{"${:,}".format(users.amount)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>
                   <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>
@@ -44,6 +66,42 @@
                   </td>
             
                   </tr>
+                  {% endfor %}
+
+                  
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header card-header-primary">
+          <h4 class="card-title mt-0">Deposit History</h4>
+        </div>
+        <div class="card-body">
+          <div id="table" class="table-editable table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Date</th>
+                <th>Deposit Amount</th>
+                <th>Status</th>
+              </thead>
+              <tbody>
+  
+                {% for users in history %}
+                  <tr>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.date}}</b></td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.amount)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>            
+                  </tr>
+                  {% endfor %}
 
                   
               </tbody>
@@ -91,7 +149,7 @@
     <script>
     $(document).ready(function(){
         $('#tableT').after('<div id="nav"></div>');
-        var rowsShown = 7;
+        var rowsShown = 5;
         var rowsTotal = $('#tableT tbody tr').length;
         var numPages = rowsTotal/rowsShown;
         for(i = 0;i < numPages;i++) {
@@ -109,6 +167,32 @@
             var startItem = currPage * rowsShown;
             var endItem = startItem + rowsShown;
             $('#tableT tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+            css('display','table-row').animate({opacity:1}, 300);
+        });
+    });
+    </script>
+
+   <script>
+    $(document).ready(function(){
+        $('#table').after('<div id="navv"></div>');
+        var rowsShown = 5;
+        var rowsTotal = $('#table tbody tr').length;
+        var numPages = rowsTotal/rowsShown;
+        for(i = 0;i < numPages;i++) {
+            var pageNum = i + 1;
+            $('#navv').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+        }
+        $('#table tbody tr').hide();
+        $('#table tbody tr').slice(0, rowsShown).show();
+        $('#navv a:first').addClass('active');
+        $('#navv a').bind('click', function(){
+
+            $('#navv a').removeClass('active');
+            $(this).addClass('active');
+            var currPage = $(this).attr('rel');
+            var startItem = currPage * rowsShown;
+            var endItem = startItem + rowsShown;
+            $('#table tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
             css('display','table-row').animate({opacity:1}, 300);
         });
     });

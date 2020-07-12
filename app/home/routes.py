@@ -5,9 +5,9 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from app.home import blueprint
-from app.home.util import profile_save, profile_delete
+from app.home.util import *
 from app.base.util import verify_pass, hash_pass
-from app.base.models import User, Portfolio
+from app.base.models import User, Portfolio, Deposit
 from app.base.forms import ChangePassword, UpdateProfile
 from flask import render_template, redirect, url_for, request, jsonify, Response, Flask
 from flask_login import login_required, current_user
@@ -56,18 +56,19 @@ def with_draw():
 @login_required
 def deposit():
     
+    #NEW DEPOSIT REQUEST OR EDIT REQUEST
     if request.method == 'POST':
-        print(request.get_json())
-        return json.dumps({'save':'failed'}), 200, {'ContentType':'application/json'}
-        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+        return deposit_request(request.get_json())
 
     if request.method == 'DELETE':
-        print(request.get_json())
-        return json.dumps({'save':'failed'}), 200, {'ContentType':'application/json'}
-        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+        return deposit_request_delete(request.get_json())
 
     #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-    return render_template('deposits.html')
+    pending = Deposit.query.filter_by(userID=current_user.id, status='Pending').all()
+    history = Deposit.query.filter_by(userID=current_user.id, status='Approved').all()
+    denied = Deposit.query.filter_by(userID=current_user.id, status='Denied').all()
+    history = history+denied
+    return render_template('deposits.html', pending=pending, history=history )
 
 @blueprint.route('/partners', methods=['GET'])
 @login_required
