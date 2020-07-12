@@ -12,8 +12,7 @@
   <div class="col-md-12">
     <div class="card card-plain">
       <div class="card-header card-header-primary">
-        <h4 class="card-title mt-0"> Partners Table</h4>
-        <p class="card-category"> Please Submit after each row change!</p>
+        <h4 class="card-title mt-0"> Current Deposit Requests</h4>
       </div>
       <div class="card-body">
         <div id="tableT" class="table-editable table-responsive">
@@ -22,28 +21,34 @@
               <th>id</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Invested</th>
-              <th>Weight</th>
-              <th>Save</th>
+              <th>Date</th>
+              <th>Deposit Amount</th>
+              <th>Approve</th>
+              <th>Deny</th>
             </thead>
             <tbody>
 
-              {% for users in partner %}
+              
 
                 <tr>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.id}}</b></td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.name}}</b></td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.email}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.invested)}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">%</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>1</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>admin</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">admin@a.com</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">07/12/2020</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">$500</td>
                 <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>
                     </span>
                 </td>
+                <td>
+                    <span>
+                        <button class="button-remove"></button>
+                    </span>
+                </td>
                 </tr>
 
-              {% endfor %}
+              
               
             </tbody>
           </table>
@@ -58,7 +63,7 @@
 
 <!-- Specific Page JS goes HERE Test -->
 {% block javascripts %}
-  <script src="/static/assets/js/partner-table.js"></script>
+  <!-- <script src="/static/assets/js/partner-table.js"></script> -->
   <script>
     $(document).ready(function(){
       $('#tableT').after('<div id="nav"></div>');

@@ -64,6 +64,34 @@ def partners():
     except:
         return render_template('page-500.html'), 500
 
+@blueprint.route('/partners/deposit/requests', methods=['GET'])
+@login_required
+def partners_deposits():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+        else:
+            users = Portfolio.query.all()
+            return render_template('partners-deposits.html', partner=users)
+    except:
+        return render_template('page-500.html'), 500
+
+
+@blueprint.route('/partners/<action>', methods=['POST'])
+@login_required
+def partners_action(action):   
+    if current_user.role != 'admin':
+        return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
+
+    #IF THE REQUESTS COMES FROM THE PARTNERS PAGE, THEY CANNOT EDIT THE #1 ID, THIS IS RUNNING TOTAL
+    try:
+        content = request.get_json()
+        print(content)
+        return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
+
+   
 
 @blueprint.route('/profiles', methods=['GET'])
 @login_required
