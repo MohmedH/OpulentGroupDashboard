@@ -60,14 +60,14 @@ $tableID.on('click', '.button-save', function () {
 
     //console.log(data)
     $.ajax({
-        url: '',
-        type: 'put',
+        url: '/partners/save',
+        type: 'POST',
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function(){
             console.log( 'Worked' );
             validate(button);
-            md.showNotification('top','center','success','Saved User '+ data['username'] + ' Successfully, you can refresh to view changes!')
+            md.showNotification('top','center','success','Saved User '+ data['name'] + ' Successfully, you can refresh to view changes!')
         },
         error: function( jqXhr, textStatus, errorThrown ){
             console.log( errorThrown );
