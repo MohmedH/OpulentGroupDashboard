@@ -52,6 +52,23 @@ def with_draw():
     #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
     return render_template('withdraw.html')
 
+@blueprint.route('/deposit', methods=['GET','POST','DELETE'])
+@login_required
+def deposit():
+    
+    if request.method == 'POST':
+        print(request.get_json())
+        return json.dumps({'save':'failed'}), 200, {'ContentType':'application/json'}
+        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+
+    if request.method == 'DELETE':
+        print(request.get_json())
+        return json.dumps({'save':'failed'}), 200, {'ContentType':'application/json'}
+        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+
+    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
+    return render_template('deposits.html')
+
 @blueprint.route('/partners', methods=['GET'])
 @login_required
 def partners():
