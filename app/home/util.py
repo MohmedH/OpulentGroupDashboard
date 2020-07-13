@@ -112,11 +112,9 @@ def deposit_request(content):
 
         
             #COULD BE PERFORMACE ISSUES DOWN THE LINE :)
-            depo_req = Deposit.query.filter_by(userID=user.id, date=date).first()
+            depo_req = Deposit.query.filter_by(userID=user.id, date=date, status='Pending').first()
             
             if depo_req:
-                if depo_req.status != 'Pending':
-                    return json.dumps({'Deposit Edit':'Failed'}), 400, {'ContentType':'application/json'}
                 
                 depo_req.amount = changeAmonut
                 db.session.commit()
