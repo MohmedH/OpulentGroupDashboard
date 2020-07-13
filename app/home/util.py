@@ -6,6 +6,26 @@ import json
 import datetime
 
 
+def portfolio_rebalance():
+    parteners = Portfolio.query.all()
+
+    #Make sure user with ID 1 is the total and weight 1.
+    for partner in parteners:
+        if partner.id == 1:
+            master = partner
+            master.invested = 0
+        else:
+            master.invested = master.invested + partner.invested
+
+    for partner in parteners:
+        if partner.id == 1:
+            master = partner
+            master.weight = 1.0
+        else:
+            partner.weight = partner.invested / master.invested
+
+    db.session.commit()
+
 def profile_save(content):
     try:
         user = User.query.filter_by(id=content['id']).first()
@@ -178,9 +198,14 @@ def deposit_request_admin_approve(content):
 
         if del_req:
             if del_req.status != 'Pending':
-                return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+                return json.dumps({'Deposit Not Pending':'failed'}), 400, {'ContentType':'application/json'}
 
             #TO DO ADD THE AMOUNT SENT IN, TO PORTFOLIO AND THEN MARK AS APPROVED
+            if del_req.userID != 1:
+                acc = User.query.filter_by(id=del_req.userID).first()
+                port = Portfolio.query.filter_by(email=acc.email).first()
+
+                port.invested += del_req.amount
 
             del_req.status = "Approved"
 
@@ -189,15 +214,16 @@ def deposit_request_admin_approve(content):
             #     del_req.amount = content['deposit amount']
             
             db.session.commit()
+            portfolio_rebalance()
 
         else:
-            return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+            return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
 
 
        
         return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
     except:
-        return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+        return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
 def deposit_request_admin_deny(content):
     try:
@@ -219,6 +245,7 @@ def deposit_request_admin_deny(content):
             #     del_req.amount = content['deposit amount']
             
             db.session.commit()
+            
 
         else:
             return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
@@ -227,18 +254,23 @@ def deposit_request_admin_deny(content):
        
         return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
     except:
-        return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+        return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
-def portfolio_weight():
-    parteners = Portfolio.query.all()
+def partners_edit(content):
+    #print(content)
+    try:
 
-    #Make sure user with ID 1 is the total and weight 1.
+        port = Portfolio.query.filter_by(email=content['email']).first()
 
-    for partner in parteners:
-        if partner.id == 1:
-            master = partner
-            master.weight = 1.0
+        if port:
+
+            port.invested = content['invested']
+            db.session.commit()
+            portfolio_rebalance()
+
         else:
-            partner.weight = partner.invested / master.invested
+            return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
 
-    db.session.commit()
+        return json.dumps({'Partner Edit':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}

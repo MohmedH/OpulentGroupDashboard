@@ -60,7 +60,7 @@ $tableID.on('click', '.button-save', function () {
 
     //console.log(data)
     $.ajax({
-        url: '/partners/save',
+        url: '/partners',
         type: 'POST',
         data: JSON.stringify(data),
         contentType: "application/json",
