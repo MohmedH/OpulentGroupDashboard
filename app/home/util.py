@@ -1,5 +1,6 @@
 from app import db
 from app.base.models import User, Portfolio, Deposit
+from app.base.util import verify_pass, hash_pass
 from flask_login import current_user
 import json
 import datetime
@@ -40,11 +41,12 @@ def profile_save(content):
             userNew.name = content['name']
             pwd = hash_pass( 'pass' )
             userNew.password = pwd
-
+            
             portNew = Portfolio()
             portNew.email = content['email']
             portNew.name = content['name']
             portNew.invested = 0
+            portNew.weight = 0.0
 
             db.session.add(userNew)
             db.session.add(portNew)
@@ -164,3 +166,79 @@ def deposit_request_delete(content):
         return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
     except:
         return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+def deposit_request_admin_approve(content):
+    try:
+        
+        date = content['date']
+        user = content['user id']
+        #amount = content['deposit amount'] Possibly use amount also for search to get 
+
+        del_req = Deposit.query.filter_by(userID=user, date=date, status='Pending').first()
+
+        if del_req:
+            if del_req.status != 'Pending':
+                return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+            #TO DO ADD THE AMOUNT SENT IN, TO PORTFOLIO AND THEN MARK AS APPROVED
+
+            del_req.status = "Approved"
+
+            #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
+            # if content['deposit amount'] != del_req.amount:
+            #     del_req.amount = content['deposit amount']
+            
+            db.session.commit()
+
+        else:
+            return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+
+       
+        return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+def deposit_request_admin_deny(content):
+    try:
+        
+        date = content['date']
+        user = content['user id']
+        #amount = content['deposit amount'] Possibly use amount also for search to get 
+
+        del_req = Deposit.query.filter_by(userID=user, date=date, status='Pending').first()
+
+        if del_req:
+            if del_req.status != 'Pending':
+                return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+            del_req.status = "Denied"
+
+            #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
+            # if content['deposit amount'] != del_req.amount:
+            #     del_req.amount = content['deposit amount']
+            
+            db.session.commit()
+
+        else:
+            return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+
+       
+        return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+def portfolio_weight():
+    parteners = Portfolio.query.all()
+
+    #Make sure user with ID 1 is the total and weight 1.
+
+    for partner in parteners:
+        if partner.id == 1:
+            master = partner
+            master.weight = 1.0
+        else:
+            partner.weight = partner.invested / master.invested
+
+    db.session.commit()

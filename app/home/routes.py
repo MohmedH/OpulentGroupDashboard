@@ -52,6 +52,7 @@ def with_draw():
     #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
     return render_template('withdraw.html')
 
+#REGULAR DEPOSIT
 @blueprint.route('/deposit', methods=['GET','POST','DELETE'])
 @login_required
 def deposit():
@@ -70,6 +71,29 @@ def deposit():
     history = history+denied
     return render_template('deposits.html', pending=pending, history=history )
 
+#ADMIN FOR DEPOSIT
+@blueprint.route('/partners/deposit/requests', methods=['GET','POST','DELETE'])
+@login_required
+def partners_deposits():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+
+        if request.method == 'POST':
+            return deposit_request_admin_approve(request.get_json())
+
+        if request.method == 'DELETE':
+            return deposit_request_admin_deny(request.get_json())
+        
+        dReqs = Deposit.query.filter_by(status='Pending').all()
+        history = Deposit.query.filter_by(status='Approved').all()
+        history = history + Deposit.query.filter_by(status='Denied').all()
+        users = User.query.all()
+        return render_template('partners-deposits.html', pending=dReqs, users=users, history=history)
+
+    except:
+        return render_template('page-500.html'), 500
+
 @blueprint.route('/partners', methods=['GET'])
 @login_required
 def partners():
@@ -78,21 +102,11 @@ def partners():
             return render_template('page-403.html'), 403
         else:
             users = Portfolio.query.all()
+            portfolio_weight()
             return render_template('partners.html', partner=users)
     except:
         return render_template('page-500.html'), 500
 
-@blueprint.route('/partners/deposit/requests', methods=['GET'])
-@login_required
-def partners_deposits():
-    try:
-        if  current_user.role != 'admin':
-            return render_template('page-403.html'), 403
-        else:
-            users = Portfolio.query.all()
-            return render_template('partners-deposits.html', partner=users)
-    except:
-        return render_template('page-500.html'), 500
 
 
 @blueprint.route('/partners/<action>', methods=['POST'])

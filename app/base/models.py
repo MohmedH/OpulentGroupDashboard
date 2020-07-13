@@ -66,6 +66,7 @@ class Portfolio(db.Model):
     email = Column(String, unique=True)
     name = Column(String)
     invested = Column(Integer)
+    weight = Column(REAL)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

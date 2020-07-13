@@ -7,6 +7,8 @@
 
 {% block content %}
 
+<h2 style="color: white; text-align: center;"><b>Deposit Management</b></h2>
+
 <div class="row">
 
   <div class="col-md-12">
@@ -18,9 +20,8 @@
         <div id="tableT" class="table-editable table-responsive">
           <table class="table table-hover">
             <thead>
-              <th>id</th>
+              <th>User ID</th>
               <th>Name</th>
-              <th>Email</th>
               <th>Date</th>
               <th>Deposit Amount</th>
               <th>Approve</th>
@@ -28,14 +29,18 @@
             </thead>
             <tbody>
 
-              
-
+              {%for deposit in pending%}
                 <tr>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>1</b></td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>admin</b></td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">admin@a.com</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">07/12/2020</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">$500</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.userID}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>
+                  {%for user in users%}
+                    {%if user.id == deposit.userID%}
+                      {{user.name}}
+                    {%endif%}
+                  {%endfor%}
+                </b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.date}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(deposit.amount)}}</td>
                 <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>
@@ -47,9 +52,52 @@
                     </span>
                 </td>
                 </tr>
+                {%endfor%}
+ 
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
-              
-              
+</div>
+
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="card card-plain">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title mt-0">Deposit History</h4>
+      </div>
+      <div class="card-body">
+        <div id="table" class="table-editable table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Deposit Amount</th>
+              <th>Status</th>
+            </thead>
+            <tbody>
+
+              {%for deposit in history%}
+                <tr>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.userID}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>
+                  {%for user in users%}
+                    {%if user.id == deposit.userID%}
+                      {{user.name}}
+                    {%endif%}
+                  {%endfor%}
+                </b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.date}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(deposit.amount)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{deposit.status}}</td>
+                </tr>
+                {%endfor%}
+ 
             </tbody>
           </table>
         </div>
@@ -63,7 +111,7 @@
 
 <!-- Specific Page JS goes HERE Test -->
 {% block javascripts %}
-  <!-- <script src="/static/assets/js/partner-table.js"></script> -->
+  <script src="/static/assets/js/deposit-table-admin.js"></script>
   <script>
     $(document).ready(function(){
       $('#tableT').after('<div id="nav"></div>');
@@ -89,6 +137,32 @@
       });
     });
   </script>
+
+<script>
+  $(document).ready(function(){
+    $('#table').after('<div id="navv"></div>');
+    var rowsShown = 4;
+    var rowsTotal = $('#table tbody tr').length;
+    var numPages = rowsTotal/rowsShown;
+    for(i = 0;i < numPages;i++) {
+        var pageNum = i + 1;
+        $('#navv').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+    }
+    $('#table tbody tr').hide();
+    $('#table tbody tr').slice(0, rowsShown).show();
+    $('#navv a:first').addClass('active');
+    $('#navv a').bind('click', function(){
+
+        $('#navv a').removeClass('active');
+        $(this).addClass('active');
+        var currPage = $(this).attr('rel');
+        var startItem = currPage * rowsShown;
+        var endItem = startItem + rowsShown;
+        $('#table tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+        css('display','table-row').animate({opacity:1}, 300);
+    });
+  });
+</script>
 
 
 {% endblock javascripts %}
