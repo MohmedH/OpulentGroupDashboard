@@ -131,6 +131,7 @@ class Deposit(db.Model):
     date = Column(Date)
     amount = Column(REAL)
     status = Column(String)
+    dateApproved = Column(Date)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

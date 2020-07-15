@@ -29,7 +29,8 @@ CREATE TABLE public."DepositRequests" (
     uuid uuid,
     date date,
     amount real,
-    status character varying
+    status character varying,
+    "dateApproved" date
 );
 
 
@@ -304,15 +305,15 @@ ALTER TABLE ONLY public."Users_Graveyard" ALTER COLUMN id SET DEFAULT nextval('p
 -- Data for Name: DepositRequests; Type: TABLE DATA; Schema: public; Owner: Hira
 --
 
-COPY public."DepositRequests" (id, uuid, date, amount, status) FROM stdin;
-1	14c28333-2262-4b04-b5ef-be3895544a14	2020-07-15	100	Denied
-2	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	500	Approved
-3	14c28333-2262-4b04-b5ef-be3895544a14	2020-07-15	1000	Approved
-4	500b06a9-1feb-4dd1-af7d-2cb1d7f4a456	2020-07-15	1000	Approved
-5	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	500	Denied
-6	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	20	Approved
-7	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	999	Pending
-8	8dce4095-d1f2-4bb2-98ab-cfdd4bc3d7b3	2020-07-15	10	Approved
+COPY public."DepositRequests" (id, uuid, date, amount, status, "dateApproved") FROM stdin;
+1	14c28333-2262-4b04-b5ef-be3895544a14	2020-07-15	100	Denied	\N
+2	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	500	Approved	\N
+3	14c28333-2262-4b04-b5ef-be3895544a14	2020-07-15	1000	Approved	\N
+4	500b06a9-1feb-4dd1-af7d-2cb1d7f4a456	2020-07-15	1000	Approved	\N
+5	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	500	Denied	\N
+6	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	20	Approved	\N
+7	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	999	Pending	\N
+8	8dce4095-d1f2-4bb2-98ab-cfdd4bc3d7b3	2020-07-15	10	Approved	\N
 \.
 
 
@@ -371,7 +372,7 @@ COPY public."Users_Graveyard" (id, uuid, username, email, password, role, full_n
 --
 
 COPY public.alembic_version (version_num) FROM stdin;
-9af21d09db6d
+1b612e4e2cd3
 \.
 
 
