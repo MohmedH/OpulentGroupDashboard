@@ -1,5 +1,5 @@
 from app import db
-from app.base.models import User, Portfolio, Deposit
+from app.base.models import User, Portfolio, Deposit, UserGraveyard
 from app.base.util import verify_pass, hash_pass
 from flask_login import current_user
 import json
@@ -61,6 +61,7 @@ def profile_save(content):
             userNew.name = content['name']
             pwd = hash_pass( 'pass' )
             userNew.password = pwd
+            userNew.created_at = datetime.datetime.now().date()
             
             portNew = Portfolio()
             portNew.email = content['email']
@@ -88,6 +89,18 @@ def profile_delete(content):
             if count != 0:
                 user = User.query.filter_by(id=content['id']).one()
                 port = Portfolio.query.filter_by(email=user.email).one()
+
+                uG = UserGraveyard()
+                uG.username = user.username
+                uG.email = user.email
+                uG.full_name = user.name
+                uG.userID = user.id
+                uG.deleted_at = datetime.datetime.now().date()
+                uG.password = user.password
+                uG.role = user.role
+
+                db.session.add(uG)
+
                 db.session.delete(user)
                 db.session.delete(port)
                 db.session.commit()

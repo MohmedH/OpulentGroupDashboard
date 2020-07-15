@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from flask_login import UserMixin
-from sqlalchemy import Binary, Column, Integer, String, REAL,Date
+from sqlalchemy import Binary, Column, Integer, String, REAL, Date
 
 from app import db, login_manager
 
@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     password = Column(Binary)
     role = Column(String, default='regular')
     name = Column(String)
+    created_at = Column(Date)
 
     def __init__(self, **kwargs):
         setattr(self, 'role', 'regular')
@@ -48,6 +49,44 @@ class User(db.Model, UserMixin):
     def u_role(self):
         return self.role
 
+class UserGraveyard(db.Model):
+
+    __tablename__ = 'Users_Graveyard'
+
+    id = Column(Integer, primary_key=True)
+    userID = Column(Integer, unique=True)
+    username = Column(String)
+    email = Column(String)
+    password = Column(Binary)
+    role = Column(String, default='regular')
+    full_name = Column(String)
+    deleted_at = Column(Date)
+
+    def __init__(self, **kwargs):
+        setattr(self, 'role', 'regular')
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            if property == 'password':
+                value = hash_pass( value ) # we need bytes here (not plain str)
+                
+            setattr(self, property, value)
+        
+
+    def __repr__(self):
+        return str(self.username)
+
+    def u_email(self):
+        return self.email
+
+    @property
+    def u_role(self):
+        return self.role
 
 @login_manager.user_loader
 def user_loader(id):
