@@ -63,6 +63,31 @@ def login():
 
     return redirect(url_for('home_blueprint.index'))
 
+@blueprint.route('/setup', methods=['GET', 'POST'])
+def create_first_user():
+    create_account_form = CreateAccountForm(request.form)
+
+    user = User.query.filter_by(id=1).first()
+
+    if request.method == 'POST':          
+        if user:
+           #print("THIS END POINT IS NOT LONGER VALID")
+           redirect(url_for('base_blueprint.route_default'))
+        else:
+            user = User(**request.form)
+            defaultPort = {'email':user.email,'invested':0}
+            protfolio = Portfolio(**defaultPort)
+            
+            db.session.add(protfolio)
+            db.session.add(user)
+            db.session.commit()
+
+    if user:
+        return redirect(url_for('base_blueprint.route_default'))
+    else:
+        return render_template( 'login/register.html', form=create_account_form)
+
+'''
 @blueprint.route('/create_user', methods=['GET', 'POST'])
 def create_user():
     login_form = LoginForm(request.form)
@@ -95,6 +120,7 @@ def create_user():
 
     else:
         return render_template( 'login/register.html', form=create_account_form)
+'''
 
 @blueprint.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
@@ -136,6 +162,7 @@ def logout():
     logout_user()
     return redirect(url_for('base_blueprint.login'))
 
+'''
 @blueprint.route('/shutdown')
 def shutdown():
     func = request.environ.get('werkzeug.server.shutdown')
@@ -143,6 +170,7 @@ def shutdown():
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
     return 'Server shutting down...'
+'''
 
 ## Errors
 
