@@ -94,7 +94,7 @@ def profile_delete(content):
                 uG.username = user.username
                 uG.email = user.email
                 uG.full_name = user.name
-                uG.userID = user.id
+                uG.uuid = user.uuid
                 uG.deleted_at = datetime.datetime.now().date()
                 uG.password = user.password
                 uG.role = user.role
@@ -125,7 +125,7 @@ def deposit_request(content):
 
         
             #COULD BE PERFORMACE ISSUES DOWN THE LINE :)
-            depo_req = Deposit.query.filter_by(userID=user.id, date=date, status='Pending').first()
+            depo_req = Deposit.query.filter_by(uuid=user.uuid, date=date, status='Pending').first()
             
             if depo_req:
                 
@@ -140,7 +140,7 @@ def deposit_request(content):
 
         except:
             #THIS WILL BE FOR NEW REQUESTS, DEPOSIT TAKES JUST The First ARGUMENT, Can submit once every week
-            depo_req = Deposit.query.filter_by(userID=user.id, status='Pending').all()
+            depo_req = Deposit.query.filter_by(uuid=user.uuid, status='Pending').all()
             
             if depo_req:
                 today = datetime.date.today()
@@ -157,7 +157,7 @@ def deposit_request(content):
             new_deposit.amount = amount
             new_deposit.status = 'Pending'
             new_deposit.date = datetime.datetime.now().date()
-            new_deposit.userID = user.id
+            new_deposit.uuid = user.uuid
             
             db.session.add(new_deposit)
             db.session.commit()
@@ -180,7 +180,7 @@ def deposit_request_delete(content):
         date = content['date']
         #amount = content['deposit amount'] Possibly use amount also for search to get 
 
-        del_req = Deposit.query.filter_by(userID=current_user.id, date=date, status='Pending').first()
+        del_req = Deposit.query.filter_by(uuid=current_user.uuid, date=date, status='Pending').first()
 
         if del_req:
             if del_req.status != 'Pending':
@@ -203,17 +203,16 @@ def deposit_request_admin_approve(content):
         
         date = content['date']
         user = content['user id']
+        first_user = User.query.filter_by(id=1).first()
         #amount = content['deposit amount'] Possibly use amount also for search to get 
 
-        del_req = Deposit.query.filter_by(userID=user, date=date, status='Pending').first()
+        del_req = Deposit.query.filter_by(uuid=user, date=date, status='Pending').first()
 
         if del_req:
-            if del_req.status != 'Pending':
-                return json.dumps({'Deposit Not Pending':'failed'}), 400, {'ContentType':'application/json'}
-
+            
             #TO DO ADD THE AMOUNT SENT IN, TO PORTFOLIO AND THEN MARK AS APPROVED
-            if del_req.userID != 1:
-                acc = User.query.filter_by(id=del_req.userID).first()
+            if del_req.uuid != first_user.uuid:
+                acc = User.query.filter_by(uuid=del_req.uuid).first()
                 port = Portfolio.query.filter_by(email=acc.email).first()
 
                 port.invested += del_req.amount
@@ -232,7 +231,7 @@ def deposit_request_admin_approve(content):
 
 
        
-        return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
+        return json.dumps({'Deposit Approved':'success'}), 200, {'ContentType':'application/json'}
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
@@ -243,7 +242,7 @@ def deposit_request_admin_deny(content):
         user = content['user id']
         #amount = content['deposit amount'] Possibly use amount also for search to get 
 
-        del_req = Deposit.query.filter_by(userID=user, date=date, status='Pending').first()
+        del_req = Deposit.query.filter_by(uuid=user, date=date, status='Pending').first()
 
         if del_req:
             if del_req.status != 'Pending':

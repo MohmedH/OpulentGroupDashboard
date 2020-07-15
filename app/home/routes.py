@@ -65,9 +65,9 @@ def deposit():
         return deposit_request_delete(request.get_json())
 
     #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-    pending = Deposit.query.filter_by(userID=current_user.id, status='Pending').all()
-    history = Deposit.query.filter_by(userID=current_user.id, status='Approved').all()
-    denied = Deposit.query.filter_by(userID=current_user.id, status='Denied').all()
+    pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+    history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
+    denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
     history = history+denied
     return render_template('deposits.html', pending=pending, history=history )
 

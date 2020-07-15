@@ -75,11 +75,14 @@ def create_first_user():
            redirect(url_for('base_blueprint.route_default'))
         else:
             user = User(**request.form)
-            defaultPort = {'email':user.email,'invested':0}
+            user.role = 'admin'
+            user.name = 'Admin'
+            #user.created_at = 'n/a'
+            defaultPort = {'email':user.email,'invested':0, 'name':user.name, 'weight':0.0}
             protfolio = Portfolio(**defaultPort)
             
-            db.session.add(protfolio)
             db.session.add(user)
+            db.session.add(protfolio)
             db.session.commit()
 
     if user:

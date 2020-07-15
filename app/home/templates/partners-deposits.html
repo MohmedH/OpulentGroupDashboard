@@ -31,10 +31,10 @@
 
               {%for deposit in pending%}
                 <tr>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.userID}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.uuid}}</b></td>
                 <td class="pt-3-half" style="color: white;" contenteditable="false"><b>
                   {%for user in users%}
-                    {%if user.id == deposit.userID%}
+                    {%if user.uuid == deposit.uuid%}
                       {{user.name}}
                     {%endif%}
                   {%endfor%}
@@ -84,10 +84,10 @@
 
               {%for deposit in history%}
                 <tr>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{deposit.userID}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false" style="display:none"><b>{{deposit.uuid}}</b></td>
                 <td class="pt-3-half" style="color: white;" contenteditable="false"><b>
                   {%for user in users%}
-                    {%if user.id == deposit.userID%}
+                    {%if user.uuid == deposit.uuid%}
                       {{user.name}}
                     {%endif%}
                   {%endfor%}

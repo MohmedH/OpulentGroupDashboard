@@ -14,7 +14,9 @@ class Config(object):
     SECRET_KEY = 'key'
 
     # This will create a file in <app> FOLDER
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+    #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+    
+    SQLALCHEMY_DATABASE_URI  = 'postgresql://localhost/TOG'
 
     # For 'in memory' database, please use:
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
