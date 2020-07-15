@@ -40,112 +40,6 @@ def index():
 
     return render_template('index.html', chart = dataDailySalesChart, investAMT=investmentAmt)
 
-@blueprint.route('/withdraw', methods=['GET','POST'])
-@login_required
-def with_draw():
-   
-    if request.method == 'POST':
-        print(request.get_json())
-        return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
-        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
-
-    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-    return render_template('withdraw.html')
-
-#REGULAR DEPOSIT
-@blueprint.route('/deposit', methods=['GET','POST','DELETE'])
-@login_required
-def deposit():
-    
-    #NEW DEPOSIT REQUEST OR EDIT REQUEST
-    if request.method == 'POST':
-        return deposit_request(request.get_json())
-
-    if request.method == 'DELETE':
-        return deposit_request_delete(request.get_json())
-
-    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-    pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
-    history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
-    denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
-    history = history+denied
-    return render_template('deposits.html', pending=pending, history=history )
-
-#ADMIN FOR DEPOSIT
-@blueprint.route('/partners/deposit/requests', methods=['GET','POST','DELETE'])
-@login_required
-def partners_deposits():
-    try:
-        if  current_user.role != 'admin':
-            return render_template('page-403.html'), 403
-
-        if request.method == 'POST':
-            return deposit_request_admin_approve(request.get_json())
-
-        if request.method == 'DELETE':
-            return deposit_request_admin_deny(request.get_json())
-        
-        dReqs = Deposit.query.filter_by(status='Pending').all()
-        history = Deposit.query.filter_by(status='Approved').all()
-        history = history + Deposit.query.filter_by(status='Denied').all()
-        users = User.query.all()
-        return render_template('partners-deposits.html', pending=dReqs, users=users, history=history)
-
-    except:
-        return render_template('page-500.html'), 500
-
-@blueprint.route('/partners', methods=['GET','POST'])
-@login_required
-def partners():
-    try:
-        if  current_user.role != 'admin':
-            return render_template('page-403.html'), 403
-        else:
-            if request.method == 'POST':
-                print('HERE')
-                return partners_edit(request.get_json())
-
-            partners = Portfolio.query.all()
-            return render_template('partners.html', partner=partners)
-    except:
-        return render_template('page-500.html'), 500
-
-
-@blueprint.route('/profiles', methods=['GET'])
-@login_required
-def profile():
-    try:
-        if  current_user.role != 'admin':
-            return render_template('page-403.html'), 403
-        else:
-            users = User.query.all()
-            return render_template('profiles.html', test=users)
-    except:
-        return render_template('page-500.html'), 500
-
-@blueprint.route('/profiles/<action>', methods=['POST', 'PUT', 'DELETE'])
-@login_required
-def profileActions(action):
-    if  current_user.role != 'admin':
-        return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
-    
-    if action != 'save':
-        return json.dumps({'Error':'Not Found'}), 404, {'ContentType':'application/json'}
-
-    if request.method == 'POST' or request.method == 'PUT':     
-        try:
-            content = request.get_json()
-            return profile_save(content)
-        except:
-            return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
-   
-    if request.method == 'DELETE':
-        try:
-            content = request.get_json()
-            return profile_delete(content)
-        except:
-            return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
-
 #If you ever update email, that is the pm key that connects all the other tables, so you must update that accordingly
 @blueprint.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required
@@ -239,6 +133,127 @@ def page_user(username):
     except:
         return render_template('page-500.html'), 500
 
+@blueprint.route('/withdraw', methods=['GET','POST','DELETE'])
+@login_required
+def with_draw():
+   
+    if request.method == 'POST':
+        print(request.get_json())
+        return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
+        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+
+    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
+    return render_template('withdraw.html')
+
+#REGULAR DEPOSIT
+@blueprint.route('/deposit', methods=['GET','POST','DELETE'])
+@login_required
+def deposit():
+    
+    #NEW DEPOSIT REQUEST OR EDIT REQUEST
+    if request.method == 'POST':
+        return deposit_request(request.get_json())
+
+    if request.method == 'DELETE':
+        return deposit_request_delete(request.get_json())
+
+    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
+    pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+    history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
+    denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
+    history = history+denied
+    return render_template('deposits.html', pending=pending, history=history )
+
+'''
+BELOW ARE ADMIN ENDPOINTS
+
+USE THIS TO START EACH:
+if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+
+
+'''
+#ADMIN FOR DEPOSIT
+@blueprint.route('/partners/deposit/requests', methods=['GET','POST','DELETE'])
+@login_required
+def partners_deposits():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+
+        if request.method == 'POST':
+            return deposit_request_admin_approve(request.get_json())
+
+        if request.method == 'DELETE':
+            return deposit_request_admin_deny(request.get_json())
+        
+        dReqs = Deposit.query.filter_by(status='Pending').all()
+        history = Deposit.query.filter_by(status='Approved').all()
+        history = history + Deposit.query.filter_by(status='Denied').all()
+        users = User.query.all()
+        return render_template('partners-deposits.html', pending=dReqs, users=users, history=history)
+
+    except:
+        return render_template('page-500.html'), 500
+
+@blueprint.route('/partners', methods=['GET','POST'])
+@login_required
+def partners():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+        else:
+            if request.method == 'POST':
+                #print('HERE')
+                return partners_edit(request.get_json())
+
+            partners = Portfolio.query.all()
+            return render_template('partners.html', partner=partners)
+    except:
+        return render_template('page-500.html'), 500
+
+@blueprint.route('/profiles', methods=['GET'])
+@login_required
+def profile():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+        else:
+            users = User.query.all()
+            return render_template('profiles.html', test=users)
+    except:
+        return render_template('page-500.html'), 500
+
+@blueprint.route('/profiles/<action>', methods=['POST', 'PUT', 'DELETE'])
+@login_required
+def profileActions(action):
+    if  current_user.role != 'admin':
+        return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
+    
+    if action != 'save':
+        return json.dumps({'Error':'Not Found'}), 404, {'ContentType':'application/json'}
+
+    if request.method == 'POST' or request.method == 'PUT':     
+        try:
+            content = request.get_json()
+            return profile_save(content)
+        except:
+            return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
+   
+    if request.method == 'DELETE':
+        try:
+            content = request.get_json()
+            return profile_delete(content)
+        except:
+            return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
+
+@blueprint.route('/update/gains_losses', methods=['GET','POST','DELETE'])
+@login_required
+def update_gains_losses():
+    if  current_user.role != 'admin':
+        return render_template('page-403.html'), 403
+
+    return render_template('updategains.html')
 
 
 @blueprint.route('/<template>')
@@ -248,6 +263,11 @@ def route_template(template):
         return redirect(url_for('base_blueprint.login'))
 
     try:
+        return render_template('page-404.html'), 404
+    except:
+        return render_template('page-500.html'), 500
+    '''
+    try:
 
         return render_template(template + '.html')
 
@@ -256,3 +276,4 @@ def route_template(template):
     
     except:
         return render_template('page-500.html'), 500
+    '''

@@ -7,52 +7,44 @@
 
 {% block content %}
 
-<h2 style="color: white; text-align: center;"><b>Update Daily Gains/Losses</b></h2>
+<h2 style="color: white; text-align: center;"><b>Update Daily Gains & Losses</b></h2>
 
 <div class="row">
 
   <div class="col-md-12">
     <div class="card card-plain">
       <div class="card-header card-header-primary">
-        <h4 class="card-title mt-0"> Users Table</h4>
+        <h4 class="card-title mt-0">Daily Gain/Loss Table</h4>
         <p class="card-category"> Please Submit after each row change!</p>
       </div>
       <div class="card-body">
         <div id="tableT" class="table-editable table-responsive">
           <span class="table-add-new float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button"><i>New User</i></a></span>
+          <input type="datetime" id="myInput" onkeyup="myFunction()" placeholder="Search ex: 2020-07-15">
           <table class="table table-hover">
             <thead>
               <th>id</th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Name</th>
-              <th>Role</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Gain Or Loss</th>
               <th>Save</th>
-              <th>Remove</th>
             </thead>
             <tbody>
 
-              {% for users in test %}
-
+              
                 <tr>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.id}}</b></td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.username}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.email}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.name}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.role}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>1</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">2020-07-15</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">$1000</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">Gain</td>
                 <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>
                     </span>
                 </td>
-                <td>
-                    <span>
-                    <button class="button-remove"></button>
-                    </span>
-                </td>
                 </tr>
 
-              {% endfor %}
+              
               
             </tbody>
           </table>
@@ -67,7 +59,7 @@
 
 <!-- Specific Page JS goes HERE Test -->
 {% block javascripts %}
-  <script src="/static/assets/js/user-table.js"></script>
+  <script src="/static/assets/js/gain-loss-table.js"></script>
   <script>
     $(document).ready(function(){
       $('#tableT').after('<div id="nav"></div>');
@@ -92,6 +84,27 @@
           css('display','table-row').animate({opacity:1}, 300);
       });
     });
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tableT");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+            }
+        }
+    }
   </script>
 
 
