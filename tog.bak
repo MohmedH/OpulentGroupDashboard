@@ -1,0 +1,519 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.3
+-- Dumped by pg_dump version 12.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: DepositRequests; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public."DepositRequests" (
+    id integer NOT NULL,
+    uuid uuid,
+    date date,
+    amount real,
+    status character varying
+);
+
+
+ALTER TABLE public."DepositRequests" OWNER TO "Hira";
+
+--
+-- Name: DepositRequests_id_seq; Type: SEQUENCE; Schema: public; Owner: Hira
+--
+
+CREATE SEQUENCE public."DepositRequests_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."DepositRequests_id_seq" OWNER TO "Hira";
+
+--
+-- Name: DepositRequests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Hira
+--
+
+ALTER SEQUENCE public."DepositRequests_id_seq" OWNED BY public."DepositRequests".id;
+
+
+--
+-- Name: GainsAndLoss; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public."GainsAndLoss" (
+    id integer NOT NULL,
+    date date,
+    amount real,
+    "gainType" character varying
+);
+
+
+ALTER TABLE public."GainsAndLoss" OWNER TO "Hira";
+
+--
+-- Name: GainsAndLoss_id_seq; Type: SEQUENCE; Schema: public; Owner: Hira
+--
+
+CREATE SEQUENCE public."GainsAndLoss_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."GainsAndLoss_id_seq" OWNER TO "Hira";
+
+--
+-- Name: GainsAndLoss_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Hira
+--
+
+ALTER SEQUENCE public."GainsAndLoss_id_seq" OWNED BY public."GainsAndLoss".id;
+
+
+--
+-- Name: PartnersGainsAndLoss; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public."PartnersGainsAndLoss" (
+    id integer NOT NULL,
+    uuid uuid,
+    date date,
+    amount real,
+    "gainType" character varying
+);
+
+
+ALTER TABLE public."PartnersGainsAndLoss" OWNER TO "Hira";
+
+--
+-- Name: PartnersGainsAndLoss_id_seq; Type: SEQUENCE; Schema: public; Owner: Hira
+--
+
+CREATE SEQUENCE public."PartnersGainsAndLoss_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."PartnersGainsAndLoss_id_seq" OWNER TO "Hira";
+
+--
+-- Name: PartnersGainsAndLoss_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Hira
+--
+
+ALTER SEQUENCE public."PartnersGainsAndLoss_id_seq" OWNED BY public."PartnersGainsAndLoss".id;
+
+
+--
+-- Name: PortfolioMaster; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public."PortfolioMaster" (
+    id integer NOT NULL,
+    email character varying,
+    name character varying,
+    invested integer,
+    weight real
+);
+
+
+ALTER TABLE public."PortfolioMaster" OWNER TO "Hira";
+
+--
+-- Name: PortfolioMaster_id_seq; Type: SEQUENCE; Schema: public; Owner: Hira
+--
+
+CREATE SEQUENCE public."PortfolioMaster_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."PortfolioMaster_id_seq" OWNER TO "Hira";
+
+--
+-- Name: PortfolioMaster_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Hira
+--
+
+ALTER SEQUENCE public."PortfolioMaster_id_seq" OWNED BY public."PortfolioMaster".id;
+
+
+--
+-- Name: User; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public."User" (
+    id integer NOT NULL,
+    uuid uuid,
+    username character varying,
+    email character varying,
+    password bytea,
+    role character varying,
+    name character varying,
+    created_at date
+);
+
+
+ALTER TABLE public."User" OWNER TO "Hira";
+
+--
+-- Name: User_id_seq; Type: SEQUENCE; Schema: public; Owner: Hira
+--
+
+CREATE SEQUENCE public."User_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."User_id_seq" OWNER TO "Hira";
+
+--
+-- Name: User_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Hira
+--
+
+ALTER SEQUENCE public."User_id_seq" OWNED BY public."User".id;
+
+
+--
+-- Name: Users_Graveyard; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public."Users_Graveyard" (
+    id integer NOT NULL,
+    uuid uuid,
+    username character varying,
+    email character varying,
+    password bytea,
+    role character varying,
+    full_name character varying,
+    deleted_at date
+);
+
+
+ALTER TABLE public."Users_Graveyard" OWNER TO "Hira";
+
+--
+-- Name: Users_Graveyard_id_seq; Type: SEQUENCE; Schema: public; Owner: Hira
+--
+
+CREATE SEQUENCE public."Users_Graveyard_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Users_Graveyard_id_seq" OWNER TO "Hira";
+
+--
+-- Name: Users_Graveyard_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: Hira
+--
+
+ALTER SEQUENCE public."Users_Graveyard_id_seq" OWNED BY public."Users_Graveyard".id;
+
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: Hira
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO "Hira";
+
+--
+-- Name: DepositRequests id; Type: DEFAULT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."DepositRequests" ALTER COLUMN id SET DEFAULT nextval('public."DepositRequests_id_seq"'::regclass);
+
+
+--
+-- Name: GainsAndLoss id; Type: DEFAULT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."GainsAndLoss" ALTER COLUMN id SET DEFAULT nextval('public."GainsAndLoss_id_seq"'::regclass);
+
+
+--
+-- Name: PartnersGainsAndLoss id; Type: DEFAULT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."PartnersGainsAndLoss" ALTER COLUMN id SET DEFAULT nextval('public."PartnersGainsAndLoss_id_seq"'::regclass);
+
+
+--
+-- Name: PortfolioMaster id; Type: DEFAULT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."PortfolioMaster" ALTER COLUMN id SET DEFAULT nextval('public."PortfolioMaster_id_seq"'::regclass);
+
+
+--
+-- Name: User id; Type: DEFAULT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."User" ALTER COLUMN id SET DEFAULT nextval('public."User_id_seq"'::regclass);
+
+
+--
+-- Name: Users_Graveyard id; Type: DEFAULT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."Users_Graveyard" ALTER COLUMN id SET DEFAULT nextval('public."Users_Graveyard_id_seq"'::regclass);
+
+
+--
+-- Data for Name: DepositRequests; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public."DepositRequests" (id, uuid, date, amount, status) FROM stdin;
+1	14c28333-2262-4b04-b5ef-be3895544a14	2020-07-15	100	Denied
+2	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	500	Approved
+3	14c28333-2262-4b04-b5ef-be3895544a14	2020-07-15	1000	Approved
+4	500b06a9-1feb-4dd1-af7d-2cb1d7f4a456	2020-07-15	1000	Approved
+5	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	500	Denied
+6	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	20	Approved
+7	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	2020-07-15	999	Pending
+8	8dce4095-d1f2-4bb2-98ab-cfdd4bc3d7b3	2020-07-15	10	Approved
+\.
+
+
+--
+-- Data for Name: GainsAndLoss; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public."GainsAndLoss" (id, date, amount, "gainType") FROM stdin;
+\.
+
+
+--
+-- Data for Name: PartnersGainsAndLoss; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public."PartnersGainsAndLoss" (id, uuid, date, amount, "gainType") FROM stdin;
+\.
+
+
+--
+-- Data for Name: PortfolioMaster; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public."PortfolioMaster" (id, email, name, invested, weight) FROM stdin;
+1	admin@me.com	Admin	2010	1
+2	moe@me.com	Mohmed	1000	0.49751243
+3	moeh@me.com	Moe	1000	0.49751243
+6	Test	Test User	10	0.0049751243
+\.
+
+
+--
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public."User" (id, uuid, username, email, password, role, name, created_at) FROM stdin;
+2	14c28333-2262-4b04-b5ef-be3895544a14	moe	moe@me.com	\\x626466386239303865323163373165333462306136656232636438343836613533356437313836653730363030343863623164653066623538363035353063613035636361333165633337633661363239353233306465303038386564366232346534343631653234383439666365393565666165376663326335356563363963353238646438323434303035383763616130663236373236663439623432643866626532393365386562343632623732663633316631663635633933633638	regular	Mohmed	2020-07-15
+1	9a33d69c-415a-4c6c-a069-42f44fd8bdb0	admin	admin@me.com	\\x653331326236373966303536336165653436613634666234333764393939346432343536313031363739643834393632363461313733356365323035623463333661356530623231363638643634333139343666636563633630363862343338633030336637333034633963366534383965633039313230393766613761323738336238623230623832316461623237303639613139313536616633336137363862643532656664326634336137656430363532616330336635323166353334	admin	Admin	\N
+6	8dce4095-d1f2-4bb2-98ab-cfdd4bc3d7b3	Test	Test	\\x306265653533633231633830373430393538633534666232616139396537656532383263333566393564623438643037323333346332383766356335303333353361326333616461356565376630343963326461306532633063313137643338626361306338396166353531613336366334346638633666663864653037303031633733643232636265643262316635346138626663353535656135333066373566376637323330373332326364333162396130653435363166656166626531	regular	Test User	2020-07-15
+3	500b06a9-1feb-4dd1-af7d-2cb1d7f4a456	moehh	moeh@me.com	\\x316338663362323732663138323330303333363738633834386539303834626164333031646132313037656530373063613563333032646136363835313937613062323963313730353937333730643331656135343332333632656330336236623033393864643439353063656130346565646633663561653935633265303238336132303764643632666565333363333863396435643235396539653961306262343962393535666533303765626531323335336234633639373632656639	regular	Moe	2020-07-15
+\.
+
+
+--
+-- Data for Name: Users_Graveyard; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public."Users_Graveyard" (id, uuid, username, email, password, role, full_name, deleted_at) FROM stdin;
+1	a4409ac8-48b3-441a-ba81-c6cddbabdf6e	temp	temp@me.com	\\x343632393536656663376236323061646632373035386336663334636331306134633432636264343834363738633239643131333263363665366235303130623431383436613730363966626164323862373061343239313662633030623839386563666161653132643735336636626637623461336466343064633436326436643635383764336362343838366263313664643234313933336566356134623834383664343566343630313532386662653833623836386239653135386631	regular	Temp	2020-07-15
+2	56e4c927-f2d7-4aaa-a976-9d2a0bdb8407	Temp2	Temp2@me.com	\\x386466376530636132643931663965623135326334303536663863646335373962383239373563653338316335646463333239353565613265363732633235333636383765306465313635346636326530643936353036386263386436633637393565366463333737663437346634623062353338343561313366623237306338393833333461633432643037383738363235333136363935376634343638663735613936393238343262396130346161626361643337346537393933323536	regular	TempTwo	2020-07-15
+\.
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: Hira
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+9af21d09db6d
+\.
+
+
+--
+-- Name: DepositRequests_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Hira
+--
+
+SELECT pg_catalog.setval('public."DepositRequests_id_seq"', 8, true);
+
+
+--
+-- Name: GainsAndLoss_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Hira
+--
+
+SELECT pg_catalog.setval('public."GainsAndLoss_id_seq"', 1, false);
+
+
+--
+-- Name: PartnersGainsAndLoss_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Hira
+--
+
+SELECT pg_catalog.setval('public."PartnersGainsAndLoss_id_seq"', 1, false);
+
+
+--
+-- Name: PortfolioMaster_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Hira
+--
+
+SELECT pg_catalog.setval('public."PortfolioMaster_id_seq"', 6, true);
+
+
+--
+-- Name: User_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Hira
+--
+
+SELECT pg_catalog.setval('public."User_id_seq"', 6, true);
+
+
+--
+-- Name: Users_Graveyard_id_seq; Type: SEQUENCE SET; Schema: public; Owner: Hira
+--
+
+SELECT pg_catalog.setval('public."Users_Graveyard_id_seq"', 2, true);
+
+
+--
+-- Name: DepositRequests DepositRequests_pkey; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."DepositRequests"
+    ADD CONSTRAINT "DepositRequests_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: GainsAndLoss GainsAndLoss_date_key; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."GainsAndLoss"
+    ADD CONSTRAINT "GainsAndLoss_date_key" UNIQUE (date);
+
+
+--
+-- Name: GainsAndLoss GainsAndLoss_pkey; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."GainsAndLoss"
+    ADD CONSTRAINT "GainsAndLoss_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PartnersGainsAndLoss PartnersGainsAndLoss_pkey; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."PartnersGainsAndLoss"
+    ADD CONSTRAINT "PartnersGainsAndLoss_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: PortfolioMaster PortfolioMaster_email_key; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."PortfolioMaster"
+    ADD CONSTRAINT "PortfolioMaster_email_key" UNIQUE (email);
+
+
+--
+-- Name: PortfolioMaster PortfolioMaster_pkey; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."PortfolioMaster"
+    ADD CONSTRAINT "PortfolioMaster_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: User User_email_key; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_email_key" UNIQUE (email);
+
+
+--
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: User User_username_key; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_username_key" UNIQUE (username);
+
+
+--
+-- Name: User User_uuid_key; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_uuid_key" UNIQUE (uuid);
+
+
+--
+-- Name: Users_Graveyard Users_Graveyard_pkey; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public."Users_Graveyard"
+    ADD CONSTRAINT "Users_Graveyard_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: Hira
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
