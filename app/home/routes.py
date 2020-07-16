@@ -40,6 +40,15 @@ def index():
 
     return render_template('index.html', chart = dataDailySalesChart, investAMT=investmentAmt)
 
+@blueprint.route('/disclosure')
+@login_required
+def page_disclosure():
+    if not current_user.is_authenticated:
+        return redirect(url_for('base_blueprint.login'))
+
+    return render_template('disclosure.html')
+
+
 #If you ever update email, that is the pm key that connects all the other tables, so you must update that accordingly
 @blueprint.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required

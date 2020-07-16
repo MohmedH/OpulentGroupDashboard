@@ -146,7 +146,7 @@ def reset_password():
                     pR.uuid = user.uuid
                     db.session.add(pR)
                     db.session.commit()
-                fgTemplate = render_template('forgotpass.html',code=code)
+                fgTemplate = render_template('forgotpass.html',code=code, url=request.base_url)
                 app.home.emailsend.send_forgotpass__mail(user.email,fgTemplate)
                 return render_template( 'login/forgotpass.html',msg=request.form['email'], errM="If your email was valid, check your email for the link!")
             else:
