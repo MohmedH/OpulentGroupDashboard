@@ -124,7 +124,7 @@ def page_user(username):
             portfolio.name = name
 
             db.session.commit()
-            #return redirect(url_for('page_user', formpassword=pass_form, formprofile=profile_form, username=current_user.username))
+            #return redirect('/profile/'+user.username, formpassword=pass_form, formprofile=profile_form, profilemsg='Changed Info Successfully!')
             return render_template('profile.html', formpassword=pass_form, formprofile=profile_form, profilemsg='Changed Info Successfully!')
 
         else:
