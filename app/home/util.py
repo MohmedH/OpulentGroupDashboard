@@ -15,24 +15,28 @@ def get_random_string(length):
     return result_str
 
 def portfolio_rebalance():
-    parteners = Portfolio.query.all()
+    try:
+        parteners = Portfolio.query.all()
 
-    #Make sure user with ID 1 is the total and weight 1.
-    for partner in parteners:
-        if partner.id == 1:
-            master = partner
-            master.invested = 0
-        else:
-            master.invested = master.invested + partner.invested
+        #Make sure user with ID 1 is the total and weight 1.
+        for partner in parteners:
+            if partner.id == 1:
+                master = partner
+                master.invested = 0
+                master.weight = 1.0
 
-    for partner in parteners:
-        if partner.id == 1:
-            master = partner
-            master.weight = 1.0
-        else:
-            partner.weight = partner.invested / master.invested
+        for partner in parteners:
+            if partner.id != 1:
+                master.invested = master.invested + partner.invested
 
-    db.session.commit()
+        for partner in parteners:
+            if partner.id != 1:
+                partner.weight = partner.invested / master.invested
+
+        db.session.commit()
+    
+    except:
+        pass
 
 def profile_save(content):
 
@@ -294,8 +298,7 @@ def partners_edit(content):
 
             port.invested = content['invested']
             db.session.commit()
-            portfolio_rebalance()
-
+            #portfolio_rebalance()
         else:
             return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
 

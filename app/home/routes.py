@@ -214,7 +214,9 @@ def partners():
         else:
             if request.method == 'POST':
                 #print('HERE')
-                return partners_edit(request.get_json())
+                r = partners_edit(request.get_json())
+                portfolio_rebalance()
+                return r
 
             partners = Portfolio.query.all()
             return render_template('partners.html', partner=partners)
