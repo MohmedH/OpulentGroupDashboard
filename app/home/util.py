@@ -2,9 +2,17 @@ from app import db
 from app.base.models import User, Portfolio, Deposit, UserGraveyard
 from app.base.util import verify_pass, hash_pass
 from flask_login import current_user
+from jinja2 import Template
+from app.home.emailsend import send_newuser__mail
 import json
 import datetime
+import string, random
+import os
 
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 def portfolio_rebalance():
     parteners = Portfolio.query.all()
@@ -27,6 +35,7 @@ def portfolio_rebalance():
     db.session.commit()
 
 def profile_save(content):
+
     try:
         user = User.query.filter_by(id=content['id']).first()
 
@@ -59,7 +68,8 @@ def profile_save(content):
             userNew.username = content['username']
             userNew.email = content['email']
             userNew.name = content['name']
-            pwd = hash_pass( 'pass' )
+            tempPass = get_random_string(8)
+            pwd = hash_pass( tempPass )
             userNew.password = pwd
             userNew.created_at = datetime.datetime.now().date()
             
@@ -72,6 +82,14 @@ def profile_save(content):
             db.session.add(userNew)
             db.session.add(portNew)
             db.session.commit()
+
+            try:
+                base_dir = os.getcwd() + '/app/home/templates'
+                tes = os.path.join(base_dir,'newuser.html')
+                htmll = Template(open(tes).read()).render(username=userNew.username, password=tempPass, name=userNew.name)       
+                send_newuser__mail(userNew.email,htmll)
+            except Exception as ex:
+                print(ex)
 
         #Add the user or update the user then send 200, 
         #return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}

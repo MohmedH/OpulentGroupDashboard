@@ -33,5 +33,23 @@ def send_forgotpass__mail(email,htmll):
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
 
+@threading
+def send_newuser__mail(email,htmll):
+    receiver_email = email  # Enter receiver address
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Welcome To The Opulent Group"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+
+    part2 = MIMEText(htmll, "html")
+
+    message.attach(part2)
+    
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message.as_string())
+
 # if __name__ == "__main__":
 #     send_mail('groundbuster2@gmail.com')
