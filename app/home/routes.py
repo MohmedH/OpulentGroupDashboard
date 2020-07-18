@@ -7,7 +7,7 @@ Copyright (c) 2019 - present AppSeed.us
 from app.home import blueprint
 from app.home.util import *
 from app.base.util import verify_pass, hash_pass
-from app.base.models import User, Portfolio, Deposit
+from app.base.models import User, Portfolio, Deposit, Daily_Gain_Loss
 from app.base.forms import ChangePassword, UpdateProfile
 from flask import render_template, redirect, url_for, request, jsonify, Response, Flask
 from flask_login import login_required, current_user
@@ -145,34 +145,42 @@ def page_user(username):
 @blueprint.route('/withdraw', methods=['GET','POST','DELETE'])
 @login_required
 def with_draw():
+    try:
    
-    if request.method == 'POST':
-        print(request.get_json())
-        return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
-        #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+        if request.method == 'POST':
+            print(request.get_json())
+            return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
+            #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
 
-    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-    return render_template('withdraw.html')
+        #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
+        return render_template('withdraw.html')
+    
+    except:
+        return render_template('page-500.html'), 500
 
 #REGULAR DEPOSIT
 @blueprint.route('/deposit', methods=['GET','POST','DELETE'])
 @login_required
 def deposit():
+    try:
+        #NEW DEPOSIT REQUEST OR EDIT REQUEST
+        if request.method == 'POST':
+            return deposit_request(request.get_json())
+
+        if request.method == 'DELETE':
+            return deposit_request_delete(request.get_json())
+
+        #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
+        pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+        history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
+        denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
+        history = history+denied
+        return render_template('deposits.html', pending=pending, history=history )
     
-    #NEW DEPOSIT REQUEST OR EDIT REQUEST
-    if request.method == 'POST':
-        return deposit_request(request.get_json())
+    except:
+        return render_template('page-500.html'), 500
 
-    if request.method == 'DELETE':
-        return deposit_request_delete(request.get_json())
-
-    #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-    pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
-    history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
-    denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
-    history = history+denied
-    return render_template('deposits.html', pending=pending, history=history )
-
+#######################
 '''
 BELOW ARE ADMIN ENDPOINTS
 
@@ -180,8 +188,9 @@ USE THIS TO START EACH:
 if  current_user.role != 'admin':
             return render_template('page-403.html'), 403
 
-
 '''
+#######################
+
 #ADMIN FOR DEPOSIT
 @blueprint.route('/partners/deposit/requests', methods=['GET','POST','DELETE'])
 @login_required
@@ -258,13 +267,21 @@ def profileActions(action):
         except:
             return json.dumps({'save':'failed'}), 400, {'ContentType':'application/json'}
 
-@blueprint.route('/update/gains_losses', methods=['GET','POST','DELETE'])
+@blueprint.route('/update/gains_losses', methods=['GET','POST'])
 @login_required
 def update_gains_losses():
-    if  current_user.role != 'admin':
-        return render_template('page-403.html'), 403
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+        else:
+            if request.method == 'POST':
+                return gains_losses(request.get_json())
+        
+        dailyGloss = Daily_Gain_Loss.query.all()
+        return render_template('updategains.html', info=dailyGloss)
 
-    return render_template('updategains.html')
+    except:
+        return render_template('page-500.html'), 500
 
 
 @blueprint.route('/<template>')

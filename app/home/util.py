@@ -1,5 +1,5 @@
 from app import db
-from app.base.models import User, Portfolio, Deposit, UserGraveyard
+from app.base.models import *
 from app.base.util import verify_pass, hash_pass
 from flask_login import current_user
 from jinja2 import Template
@@ -9,12 +9,20 @@ import datetime
 import string, random
 import os
 import re
+from threading import Thread
+
+def threading(f):
+    def wrapper(*args, **kwargs):
+        thr = Thread(target=f, args=args, kwargs=kwargs)
+        thr.start()
+    return wrapper
 
 def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
 
+@threading
 def portfolio_rebalance():
     try:
         parteners = Portfolio.query.all()
@@ -298,12 +306,49 @@ def partners_edit(content):
 
         if port:
             if port.id != 1:
-                port.invested = content['invested']
+                port.invested = re.sub("[^\d\.]", "", content['invested'])
                 db.session.commit()
                 #portfolio_rebalance()
         else:
             return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
 
         return json.dumps({'Partner Edit':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
+
+def gains_losses(content):
+    try:
+
+        entry = Daily_Gain_Loss.query.filter_by(date=content['date']).first()
+
+        if entry:
+
+            entry.amount = re.sub("[^\d\.]", "", content['amount'])
+            
+            if content['gain or loss'].lower() != 'gain' and content['gain or loss'].lower() != 'loss':
+                entry.gainType = 'gain'
+            else:
+                entry.gainType = content['gain or loss'].lower()
+            
+            db.session.commit()
+
+        else:
+            try:
+                newdgl = Daily_Gain_Loss()
+                newdgl.date = content['date']
+                newdgl.amount = re.sub("[^\d\.]", "", content['amount'])
+
+                if content['gain or loss'].lower() != 'gain' and content['gain or loss'].lower() != 'loss':
+                    newdgl.gainType = 'gain'
+                else:
+                    newdgl.gainType = content['gain or loss'].lower()
+
+                db.session.add(newdgl)
+                db.session.commit()
+            except:
+                return json.dumps({'DB Error':'failed'}), 500, {'ContentType':'application/json'}
+
+        return json.dumps({'Gain/Loss Update':'success'}), 200, {'ContentType':'application/json'}
+    
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}

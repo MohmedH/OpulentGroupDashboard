@@ -19,11 +19,10 @@
       </div>
       <div class="card-body">
         <div id="tableT" class="table-editable table-responsive">
-          <span class="table-add-new float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button"><i>New User</i></a></span>
+          <span class="table-add-new float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button"><i>New Entry</i></a></span>
           <input type="datetime" id="myInput" onkeyup="myFunction()" placeholder="Search ex: 2020-07-15">
           <table class="table table-hover">
             <thead>
-              <th>id</th>
               <th>Date</th>
               <th>Amount</th>
               <th>Gain Or Loss</th>
@@ -31,12 +30,12 @@
             </thead>
             <tbody>
 
+              {% for daily in info %}
               
                 <tr>
-                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>1</b></td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">2020-07-15</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">$1000</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">Gain</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{daily.date}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{"${:,}".format(daily.amount)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{daily.gainType}}</td>
                 <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>
@@ -44,8 +43,8 @@
                 </td>
                 </tr>
 
-              
-              
+              {% endfor %}
+  
             </tbody>
           </table>
         </div>
@@ -94,7 +93,7 @@
 
         // Loop through all table rows, and hide those who don't match the search query
         for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[1];
+            td = tr[i].getElementsByTagName("td")[0];
             if (td) {
             txtValue = td.textContent || td.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
