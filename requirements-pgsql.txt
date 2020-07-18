@@ -6,3 +6,5 @@ flask_sqlalchemy
 gunicorn
 email_validator
 psycopg2
+celery
+redis

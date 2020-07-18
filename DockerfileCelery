@@ -1,0 +1,8 @@
+FROM python:3.6
+
+ENV FLASK_APP run.py
+
+COPY run.py gunicorn-cfg.py requirements-pgsql.txt config.py ./
+COPY app app
+
+RUN pip install -r requirements-pgsql.txt

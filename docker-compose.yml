@@ -1,5 +1,16 @@
 version: '3'
 services:
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    hostname: redis
+    volumes:
+      - redis-data:/data/redis
+    networks:
+      - redis_network
+    command: [ "redis-server"]
   app:
     container_name: app
     restart: always
@@ -13,6 +24,23 @@ services:
     networks:
       - db_network
       - web_network
+      - redis_network
+  celery:
+    container_name: celery
+    build:
+      context: .
+      dockerfile: DockerfileCelery
+    command: celery -A app.celery worker
+    user: nobody
+    depends_on:
+      - redis
+      - app
+    env_file: .env
+    restart: always
+    networks:
+      - web_network
+      - redis_network
+    
   nginx:
     container_name: nginx
     restart: always
@@ -43,5 +71,8 @@ networks:
     driver: bridge
   web_network:
     driver: bridge
+  redis_network:
+    driver: bridge
 volumes:
   my_dbdata:
+  redis-data:
