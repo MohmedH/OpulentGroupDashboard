@@ -131,8 +131,11 @@ class Portfolio(db.Model):
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
     name = Column(String)
-    invested = Column(Integer)
+    invested = Column(REAL)
     weight = Column(REAL)
+    gains = Column(REAL)
+    withdrawls = Column(REAL)
+    total = Column(REAL)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

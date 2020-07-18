@@ -8,6 +8,7 @@ import json
 import datetime
 import string, random
 import os
+import re
 
 def get_random_string(length):
     letters = string.ascii_lowercase
@@ -138,9 +139,10 @@ def deposit_request(content):
         user = User.query.filter_by(username=current_user.username).first()
         
         try:
-            changeAmonut = content['deposit amount']
+            amnt = content['deposit amount']
+            changeAmonut = re.sub("[^\d\.]", "", amnt)
             status = content['status']
-            date = content['date'] 
+            date = content['date']
 
             if status != 'Pending':
                 return json.dumps({'Deposit Edit':'Failed'}), 400, {'ContentType':'application/json'}
@@ -172,7 +174,7 @@ def deposit_request(content):
                     return json.dumps({'Deposit Request':'Failed'}), 400, {'ContentType':'application/json'}
                 
             for item in content:
-                amount = content[item]
+                amount = re.sub("[^\d\.]", "", content[item])
                 break
 
             new_deposit = Deposit()
@@ -195,7 +197,7 @@ def deposit_request(content):
 #Delete any current open requests
 def deposit_request_delete(content):
     try:
-        print(content)
+        #print(content)
         if content['status'] != 'Pending':
             return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
         
@@ -295,10 +297,10 @@ def partners_edit(content):
         port = Portfolio.query.filter_by(email=content['email']).first()
 
         if port:
-
-            port.invested = content['invested']
-            db.session.commit()
-            #portfolio_rebalance()
+            if port.id != 1:
+                port.invested = content['invested']
+                db.session.commit()
+                #portfolio_rebalance()
         else:
             return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
 
