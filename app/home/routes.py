@@ -283,6 +283,11 @@ def update_gains_losses():
     except:
         return render_template('page-500.html'), 500
 
+@blueprint.route('/cler/<name>', methods=['GET'])
+def proces(name):
+    reversee.delay(name)
+
+    return 'I just sent a req!'
 
 @blueprint.route('/<template>')
 def route_template(template):

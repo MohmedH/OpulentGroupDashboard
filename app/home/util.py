@@ -1,4 +1,4 @@
-from app import db
+from app import db, celery
 from app.base.models import *
 from app.base.util import verify_pass, hash_pass
 from flask_login import current_user
@@ -9,20 +9,16 @@ import datetime
 import string, random
 import os
 import re
-from threading import Thread
 
-def threading(f):
-    def wrapper(*args, **kwargs):
-        thr = Thread(target=f, args=args, kwargs=kwargs)
-        thr.start()
-    return wrapper
+@celery.task(name='celery_example.reversee')
+def reversee(stringg):
+    return stringg[::-1]
 
 def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
 
-@threading
 def portfolio_rebalance():
     try:
         parteners = Portfolio.query.all()
@@ -316,6 +312,35 @@ def partners_edit(content):
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
+def update_gain_loss_partners(dGLO, updateOnly):
+    try:
+        if updateOnly:
+            #print("DAY EXISITS THAT MEANS YOU MUST LOOP AND UPDATE")
+            entries = Gain_Loss.query.filter_by(date=dGLO.date).all()
+            for entry in entries:
+                entry.amount = dGLO.amount
+                entry.gainType = dGLO.gainType
+                db.session.commit()      
+        else:
+            #print("So new entries for this date")
+            users = User.query.all()
+            for user in users:
+                nGL = Gain_Loss()
+
+                nGL.uuid = user.uuid
+                nGL.date = dGLO.date
+                nGL.amount = dGLO.amount
+                nGL.gainType = dGLO.gainType
+                db.session.add(nGL)
+                db.session.commit()
+            
+        #print('hello')
+
+    except:
+        pass
+        #print('something went wrong!')
+
+
 def gains_losses(content):
     try:
 
@@ -331,6 +356,7 @@ def gains_losses(content):
                 entry.gainType = content['gain or loss'].lower()
             
             db.session.commit()
+            update_gain_loss_partners(entry,True)
 
         else:
             try:
@@ -345,6 +371,7 @@ def gains_losses(content):
 
                 db.session.add(newdgl)
                 db.session.commit()
+                update_gain_loss_partners(newdgl,False)
             except:
                 return json.dumps({'DB Error':'failed'}), 500, {'ContentType':'application/json'}
 
