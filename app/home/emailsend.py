@@ -3,6 +3,7 @@ from smtplib import SMTP
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from threading import Thread
+from app import celery
 
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
@@ -15,7 +16,7 @@ def threading(f):
         thr.start()
     return wrapper
 
-@threading
+@celery.task(name='email.send_forgotpass__mail')
 def send_forgotpass__mail(email,htmll):
     receiver_email = email  # Enter receiver address
 
@@ -33,7 +34,7 @@ def send_forgotpass__mail(email,htmll):
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
 
-@threading
+@celery.task(name='email.send_newuser__mail')
 def send_newuser__mail(email,htmll):
     receiver_email = email  # Enter receiver address
 

@@ -17,7 +17,7 @@ login_manager = LoginManager()
 
 broker = environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 backend = environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-celery = Celery(__name__, broker=broker, backend=backend, include=['app.home.util'])
+celery = Celery(__name__, broker=broker, backend=backend, include=['app.home.util','app.home.emailsend'])
 
 def register_extensions(app):
     db.init_app(app)

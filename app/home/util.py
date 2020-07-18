@@ -96,7 +96,7 @@ def profile_save(content):
                 base_dir = os.getcwd() + '/app/home/templates'
                 tes = os.path.join(base_dir,'newuser.html')
                 htmll = Template(open(tes).read()).render(username=userNew.username, password=tempPass, name=userNew.name)       
-                send_newuser__mail(userNew.email,htmll)
+                send_newuser__mail.delay(userNew.email,htmll)
             except Exception as ex:
                 print(ex)
 
