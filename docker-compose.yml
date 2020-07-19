@@ -30,7 +30,7 @@ services:
     build:
       context: .
       dockerfile: DockerfileCelery
-    command: celery -A app.celery worker
+    command: celery -A run.celery worker
     user: nobody
     depends_on:
       - redis
@@ -40,6 +40,7 @@ services:
     networks:
       - web_network
       - redis_network
+      - db_network
     
   nginx:
     container_name: nginx

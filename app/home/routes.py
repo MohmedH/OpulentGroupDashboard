@@ -224,7 +224,7 @@ def partners():
             if request.method == 'POST':
                 #print('HERE')
                 r = partners_edit(request.get_json())
-                portfolio_rebalance()
+                portfolio_rebalance.delay()
                 return r
 
             partners = Portfolio.query.all()
@@ -283,11 +283,6 @@ def update_gains_losses():
     except:
         return render_template('page-500.html'), 500
 
-@blueprint.route('/cler/<name>', methods=['GET'])
-def proces(name):
-    reversee.delay(name)
-
-    return 'I just sent a req!'
 
 @blueprint.route('/<template>')
 def route_template(template):

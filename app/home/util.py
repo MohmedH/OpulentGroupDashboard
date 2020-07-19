@@ -10,15 +10,12 @@ import string, random
 import os
 import re
 
-@celery.task(name='celery_example.reversee')
-def reversee(stringg):
-    return stringg[::-1]
-
 def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
 
+@celery.task(name='task.portfolio_rebalance')
 def portfolio_rebalance():
     try:
         parteners = Portfolio.query.all()
@@ -246,13 +243,14 @@ def deposit_request_admin_approve(content):
                 port.invested += del_req.amount
 
             del_req.status = "Approved"
+            del_req.dateApproved = datetime.datetime.now().date()
 
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:
             #     del_req.amount = content['deposit amount']
             
             db.session.commit()
-            portfolio_rebalance()
+            portfolio_rebalance.delay()
 
         else:
             return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
@@ -277,6 +275,7 @@ def deposit_request_admin_deny(content):
                 return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
 
             del_req.status = "Denied"
+            del_req.dateApproved = datetime.datetime.now().date()
 
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:
@@ -297,7 +296,6 @@ def deposit_request_admin_deny(content):
 def partners_edit(content):
     #print(content)
     try:
-
         port = Portfolio.query.filter_by(email=content['email']).first()
 
         if port:
@@ -312,29 +310,33 @@ def partners_edit(content):
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
+@celery.task(name='task.update_gain_loss_partners')
 def update_gain_loss_partners(dGLO, updateOnly):
     try:
+        
         if updateOnly:
             #print("DAY EXISITS THAT MEANS YOU MUST LOOP AND UPDATE")
-            entries = Gain_Loss.query.filter_by(date=dGLO.date).all()
+            entries = Gain_Loss.query.filter_by(date=dGLO).all()
+            data = Daily_Gain_Loss.query.filter_by(date=dGLO).first()
             for entry in entries:
-                entry.amount = dGLO.amount
-                entry.gainType = dGLO.gainType
-                db.session.commit()      
+                entry.amount = data.amount
+                entry.gainType = data.gainType
+                db.session.commit()
         else:
             #print("So new entries for this date")
             users = User.query.all()
+            data = Daily_Gain_Loss.query.filter_by(date=dGLO).first()
             for user in users:
                 nGL = Gain_Loss()
 
                 nGL.uuid = user.uuid
-                nGL.date = dGLO.date
-                nGL.amount = dGLO.amount
-                nGL.gainType = dGLO.gainType
+                nGL.date = data.date
+                nGL.amount = data.amount
+                nGL.gainType = data.gainType
                 db.session.add(nGL)
                 db.session.commit()
-            
-        #print('hello')
+
+        return True
 
     except:
         pass
@@ -356,7 +358,7 @@ def gains_losses(content):
                 entry.gainType = content['gain or loss'].lower()
             
             db.session.commit()
-            update_gain_loss_partners(entry,True)
+            update_gain_loss_partners.delay(content['date'],True)
 
         else:
             try:
@@ -371,7 +373,7 @@ def gains_losses(content):
 
                 db.session.add(newdgl)
                 db.session.commit()
-                update_gain_loss_partners(newdgl,False)
+                update_gain_loss_partners.delay(content['date'],False)
             except:
                 return json.dumps({'DB Error':'failed'}), 500, {'ContentType':'application/json'}
 
