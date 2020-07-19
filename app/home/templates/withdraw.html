@@ -1,0 +1,149 @@
+{% extends "base-site.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+{% block content %}
+
+  <h3 style="color: white;"><b>Portfolio Stats</b></h3>
+  <!-- Second Row Of Info Start-->
+  <div class="row justify-content-center">
+
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="large material-icons">attach_money</i>
+          </div>
+          <p class="card-category">Withdrawable</p>
+          <h3 class="card-title"> <b>$6,420,000</b> </h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            Allow up to 30 days per withdrawl
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">attach_money</i>
+          </div>
+          <p class="card-category">Take Home Gains</p> <!--Change from danger to success based on + or - -->
+          <h3 class="card-title">$420,000</h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            Gains Less Taxes & Fees (Amount you have withdrawn)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-danger card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">money_off</i>
+          </div>
+          <p class="card-category">Taxes Charged</p> <!--Change from danger to success based on + or - -->
+          <h3 class="card-title">$120,000</h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            Taxes Paid x% on Gains 
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-danger card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">money_off</i>
+          </div>
+          <p class="card-category">Opulent Group Fees</p> <!--Change from danger to success based on + or - -->
+          <h3 class="card-title">$60,000</h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            Fees Charged x% on Gains
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+          
+        <div class="card-header">
+            <h4 style="color: white;"><b>Submit Withdraw Request </b></h4>
+            <p class="card-category" style="color: white;">(No Commas. ex $5,000 enter as 5000)</p>
+          </div>
+       
+        <form role="form" method="post" action="">
+          <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Amount</label>
+                  <input type="text" class="form-control">
+                </div>
+            </div>
+          </div>
+          <button type="submit" name="updateProfile" class="btn btn-primary pull-right">Submit</button>
+          <div class="clearfix"></div>
+        </form>
+        <button class="btn btn-primary btn-block" onclick="myFunction()">works b/c outside form</button>
+
+      </div>
+    </div>
+  </div>
+  
+
+
+  <h3 style="color: white;"><b>Current Request Status</b></h3>
+  <div class="col-md-2">
+    <div class="card">
+        <div class="card-body"style="color: white;" >
+            <b>Pending... None</b>
+        </div>
+      </div>
+  </div>
+  
+
+
+        
+{% endblock content %}
+
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+    function myFunction() {
+        $.ajax({
+                url: '/withdraw',
+                type: 'POST',
+                data: JSON.stringify("hello"),
+                contentType: "application/json",
+                success: function(){
+                    md.showNotification('top','center','success','Withdraw Request Successful')
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    md.showNotification('top','center','danger','Error! Not Implemented Yet!')
+                }
+            });
+    }
+    
+
+</script>
+
+{% endblock javascripts %}

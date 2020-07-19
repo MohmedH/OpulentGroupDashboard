@@ -9,10 +9,15 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
-from os import path
+from os import path, environ
+from celery import Celery
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+
+broker = environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+backend = environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+celery = Celery(__name__, broker=broker, backend=backend, include=['app.home.util','app.home.emailsend'])
 
 def register_extensions(app):
     db.init_app(app)
@@ -71,6 +76,16 @@ def apply_themes(app):
                     values['filename'] = theme_file
         return url_for(endpoint, **values)
 
+def init_celery(app, celery):
+    """Add flask app context to celery.Task"""
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
+        abstract = True
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+
 def create_app(config, selenium=False):
     app = Flask(__name__, static_folder='base/static')
     app.config.from_object(config)
@@ -81,4 +96,5 @@ def create_app(config, selenium=False):
     configure_database(app)
     configure_logs(app)
     apply_themes(app)
+    init_celery(app, celery=celery)
     return app

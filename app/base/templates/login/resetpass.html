@@ -21,7 +21,7 @@
               <br />
               <br />
             {% else %}
-              Enter your email.
+              Enter Your New Password
               <br />
               <br />
             {% endif %}
@@ -35,14 +35,19 @@
   
         {% else %}
 
-        <div class="wrap-input100 validate-input" data-validate = "Enter username">
-          <input class="input100" type="text" name="email" placeholder="Email">
-          <span class="focus-input100" data-placeholder="&#xf207;"></span>
+        <div class="wrap-input100 validate-input" data-validate = "Enter Password">
+          <input class="input100" type="password" name="password" placeholder="Password">
+          <span class="focus-input100" data-placeholder="&#xf191;"></span>
+        </div>
+
+        <div class="wrap-input100 validate-input" data-validate = "Re-Enter Password">
+            <input class="input100" type="password" name="verify" placeholder="Password">
+            <span class="focus-input100" data-placeholder="&#xf191;"></span>
         </div>
 
         <div class="container-login100-form-btn">
-          <button type="submit" name="next" class="login100-form-btn">
-            Next ->
+          <button type="submit" name="submit" class="login100-form-btn">
+            Submit
           </button>
         </div>
 
@@ -57,4 +62,6 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+{% endblock javascripts %}

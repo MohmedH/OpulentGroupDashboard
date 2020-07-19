@@ -2,6 +2,123 @@
 
 {% block title %} UI Tables {% endblock %} 
 
+{% block stylesheets %}
+
+<style>
+    * {
+    font-family: 'Roboto', sans-serif;
+  }
+  .container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -65px;
+    margin-top: -20px;
+    width: 130px;
+    height: 40px;
+    text-align: center;
+  }
+  .button-save {
+    outline: none;
+    height: 40px;
+    text-align: center;
+    width: 130px;
+    border-radius: 40px;
+    background: #fff;
+    border: 2px solid #1ecd97;
+    color: #1ecd97;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .button-remove {
+    outline: none;
+    height: 40px;
+    text-align: center;
+    width: 130px;
+    border-radius: 40px;
+    background: #fff;
+    border: 2px solid tomato;
+    color: tomato;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .button-save:hover {
+    color: white;
+    background: #1ecd97;
+  }
+  .button-remove:hover {
+    color: white;
+    background: tomato;
+  }
+  .button-save:active {
+    letter-spacing: 2px;
+  }
+  .button-remove:active {
+    letter-spacing: 2px;
+  }
+  .button-save:after {
+    content: "Save";
+  }
+  .button-remove:after {
+    content: "Remove";
+  }
+  .onclic {
+    width: 40px;
+    border-color: #bbb;
+    border-width: 3px;
+    font-size: 0;
+    border-left-color: #1ecd97;
+    animation: rotating 2s 0.25s linear infinite;
+  }
+  .onclic:after {
+    content: "";
+  }
+  .onclic:hover {
+    color: #1ecd97;
+    background: white;
+  }
+  .validate {
+    font-size: 13px;
+    color: white;
+    background: #1ecd97;
+    border: 2px solid #1ecd97;
+  }
+  .validate:after {
+    font-family: 'FontAwesome';
+    content: "\f00c";
+  }
+  .invalidate {
+    font-size: 13px;
+    color: white;
+    background: tomato;
+    border: 2px solid tomato;
+  }
+  .invalidate:after {
+    font-family: 'FontAwesome';
+    content: "\f00d";
+  }
+  @keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  
+</style>
+
+{% endblock stylesheets %}
+
 {% block content %}
 
     <div class="row">
@@ -140,6 +257,7 @@
             </div>
           </div>
         </div>
+
         <div class="col-md-12">
           <div class="card card-plain">
             <div class="card-header card-header-primary">
@@ -147,128 +265,86 @@
               <p class="card-category"> Here is a subtitle for this table</p>
             </div>
             <div class="card-body">
-              <div class="table-responsive">
+              <div id="table" class="table-editable table-responsive">
+                <span class="table-add float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded"><i>New User</i></a></span>
                 <table class="table table-hover">
-                  <thead class="">
+                  <thead>
                     <th>
                       ID
+                    </th>
+                    <th>
+                      Username
+                    </th>
+                    <th>
+                      Email
                     </th>
                     <th>
                       Name
                     </th>
                     <th>
-                      Country
+                      Role
                     </th>
                     <th>
-                      City
+                      Save
                     </th>
                     <th>
-                      Salary
+                      Remove
                     </th>
                   </thead>
                   <tbody>
+
                     <tr>
-                      <td>
-                        1
-                      </td>
-                      <td>
-                        Dakota Rice
-                      </td>
-                      <td>
-                        Niger
-                      </td>
-                      <td>
-                        Oud-Turnhout
-                      </td>
-                      <td>
-                        $36,738
-                      </td>
+                    <td class="pt-3-half" contenteditable="true">Aurelia Vega</td>
+                    <td class="pt-3-half" contenteditable="true">30</td>
+                    <td class="pt-3-half" contenteditable="true">Deepends</td>
+                    <td class="pt-3-half" contenteditable="true">Spain</td>
+                    <td class="pt-3-half" contenteditable="true">Madrid</td>
+                    <td>
+                        <span>
+                          <button class="button-save" id="button-remove"></button>
+                        </span>
+                    </td>
+                    <td>
+                      <span>
+                        <button class="button-remove" id="button-remove"></button>
+                      </span>
+                    </td>
                     </tr>
                     <tr>
-                      <td>
-                        2
-                      </td>
-                      <td>
-                        Minerva Hooper
-                      </td>
-                      <td>
-                        Curaçao
-                      </td>
-                      <td>
-                        Sinaai-Waas
-                      </td>
-                      <td>
-                        $23,789
-                      </td>
+                    <td class="pt-3-half" contenteditable="true">Guerra Cortez</td>
+                    <td class="pt-3-half" contenteditable="true">45</td>
+                    <td class="pt-3-half" contenteditable="true">Insectus</td>
+                    <td class="pt-3-half" contenteditable="true">USA</td>
+                    <td class="pt-3-half" contenteditable="true">San Francisco</td>
+                    <td>
+                      <span>
+                        <button class="button-save" id="button-remove"></button>
+                      </span>
+                    </td>
+                    <td>
+                      <span>
+                        <button class="button-remove" id="button-remove"></button>
+                      </span>
+                    </td>
                     </tr>
                     <tr>
+                      <td class="pt-3-half" contenteditable="true">Moe H</td>
+                      <td class="pt-3-half" contenteditable="true">45</td>
+                      <td class="pt-3-half" contenteditable="true">Insectus</td>
+                      <td class="pt-3-half" contenteditable="true">USA</td>
+                      <td class="pt-3-half" contenteditable="true">San Francisco</td>
                       <td>
-                        3
+                        <span>
+                          <button class="button-save" id="button-remove"></button>
+                        </span>
                       </td>
                       <td>
-                        Sage Rodriguez
+                        <span>
+                          <button class="button-remove" id="button-remove"></button>
+                        </span>
                       </td>
-                      <td>
-                        Netherlands
-                      </td>
-                      <td>
-                        Baileux
-                      </td>
-                      <td>
-                        $56,142
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        4
-                      </td>
-                      <td>
-                        Philip Chaney
-                      </td>
-                      <td>
-                        Korea, South
-                      </td>
-                      <td>
-                        Overland Park
-                      </td>
-                      <td>
-                        $38,735
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        5
-                      </td>
-                      <td>
-                        Doris Greene
-                      </td>
-                      <td>
-                        Malawi
-                      </td>
-                      <td>
-                        Feldkirchen in Kärnten
-                      </td>
-                      <td>
-                        $63,542
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        6
-                      </td>
-                      <td>
-                        Mason Porter
-                      </td>
-                      <td>
-                        Chile
-                      </td>
-                      <td>
-                        Gloucester
-                      </td>
-                      <td>
-                        $78,615
-                      </td>
-                    </tr>
+                      </tr>
+
                   </tbody>
                 </table>
               </div>
@@ -280,4 +356,357 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+const $tableID = $('#table');
+$tableID.on('click', '.table-remove', function () {
+    
+    $(this).parents('tr').detach();
+});
+
+$tableID.on('click', '.button-save', function () {
+    
+  $(this).addClass( "onclic");
+  
+  invalidate($(this));
+  //validate($(this))
+
+  function invalidate($obj) {
+    setTimeout(function() {
+      ( $obj ).removeClass( "onclic" );
+      ( $obj ).addClass( "invalidate", 1000);
+      callback($obj);
+    }, 3000);  
+  }
+
+  function validate($obj) {
+    setTimeout(function() {
+      ( $obj ).removeClass( "onclic" );
+      ( $obj ).addClass( "validate", 2000);
+      callback($obj);
+    }, 2000);  
+  }
+
+  function callback($obj) {
+    setTimeout(function() {
+      ( $obj ).removeClass( "validate" );
+      ( $obj ).removeClass( "invalidate" );
+    }, 1500 );
+  }
+
+});
+
+$tableID.on('click', '.button-remove', function () {
+    
+    $(this).addClass( "onclic");
+
+    var rm = $(this);
+    
+    //invalidate($(this));
+    validate($(this))
+  
+    function invalidate($obj) {
+      setTimeout(function() {
+        ( $obj ).removeClass( "onclic" );
+        ( $obj ).addClass( "invalidate", 2000);
+        callback($obj);
+      }, 2000);  
+    }
+  
+    function validate($obj) {
+      setTimeout(function() {
+        ( $obj ).removeClass( "onclic" );
+        ( $obj ).addClass( "validate", 2000);
+        callback($obj);
+      }, 2000);  
+    }
+  
+    function callback($obj) {
+      setTimeout(function() {
+        ( $obj ).removeClass( "validate" );
+        ( $obj ).removeClass( "invalidate" );
+        ($obj).parents('tr').detach();
+      }, 1500 );
+    }
+  
+  });
+
+  $('.table-add').on('click', 'i', () => {
+
+    var newTr = `
+        <tr class="hide">
+        <td class="pt-3-half" contenteditable="false"><b>0</b></td>
+        <td class="pt-3-half" contenteditable="true">Required*</td>
+        <td class="pt-3-half" contenteditable="true">Required*</td>
+        <td class="pt-3-half" contenteditable="true">Optional</td>
+        <td class="pt-3-half" contenteditable="true">regular</td>
+        <td>
+          <span>
+            <button class="button-save" id="button-remove"></button>
+          </span>
+        </td>
+        <td>
+          <span>
+            <button class="button-remove" id="button-remove"></button>
+          </span>
+        </td>
+        </tr>`;
+
+    $('tbody').append(newTr);
+
+  });
+
+
+
+
+/*
+$(function() {
+  $( ".button-save" ).click(function() {
+    $( ".button-save" ).addClass( "onclic");
+    invalidate();
+  });
+
+  function validate() {
+    setTimeout(function() {
+      $( ".button-save" ).removeClass( "onclic" );
+      $( ".button-save" ).addClass( "validate", 2000);
+      callback();
+    }, 2000);  
+  }
+
+  function invalidate() {
+    setTimeout(function() {
+      $( ".button-save" ).removeClass( "onclic" );
+      $( ".button-save" ).addClass( "invalidate", 2000);
+      callback();
+    }, 2000);  
+  }
+
+
+    function callback() {
+      setTimeout(function() {
+        $( ".button-save" ).removeClass( "validate" );
+        $( ".button-save" ).removeClass( "invalidate" );
+      }, 1500 );
+    }
+    
+  });
+  */
+  
+
+</script>
+
+<script>
+ 
+
+  const $tableID = $('#table');
+  const $BTN = $('#export-btn');
+  const $EXPORT = $('#export');
+  const dataSend = {}
+  jQuery.fn.pop = [].pop;
+  jQuery.fn.shift = [].shift;
+ 
+ 
+  $('.table-add').on('click', 'i', () => {
+ 
+     var newTr = `
+         <tr class="hide">
+         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="false"><b>0</b></td>
+         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Required*</td>
+         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Required*</td>
+         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Optional</td>
+         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">Optional</td>
+         <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">regular</td>
+         <td>
+             <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-md my-0 waves-effect waves-light">Remove</button></span>
+         </td>
+         <td>
+             <span class="table-save"><button type="button"
+                 class="btn btn-success btn-rounded btn-md my-0">Save</button></span>
+         </td>
+         </tr>`;
+     $('tbody').append(newTr);
+ 
+    //const $clone = $tableID.find('tbody tr').last().clone(true).removeClass('hide table-line');
+ 
+    //if ($tableID.find('tbody tr').length === 0) {
+ 
+     //alert("NEED TABLE")
+     // $('tbody').append(newTr);
+      
+    //}
+    /*Use this to pull data from the /test endpoint
+    $.ajax({
+         url: '/test',
+         dataType: 'json',
+         type: 'get',
+         contentType: 'application/json',
+         success: function(data){
+            for (var key in data){
+                var testtt = key;
+            }
+            var newTr = `
+                 <tr class="hide">
+                 <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                 <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true">`+testtt+`</td>
+                 <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                 <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                 <td class="pt-3-half" style="color: black; font-size: large;" contenteditable="true"></td>
+                 <td>
+                     <span class="table-remove"><button type="button" class="btn btn-danger btn-rounded btn-sm my-0 waves-effect waves-light">Remove</button></span>
+                 </td>
+                 </tr>`;
+            $('tbody').append(newTr);
+         },
+         error: function( jqXhr, textStatus, errorThrown ){
+             console.log( errorThrown );
+         }
+     });
+     */
+ 
+  });
+ 
+  /*
+  $('.table-edit').on('click', () =>{
+     //$('.table-remove').setAttribute("disabled", true);
+ 
+  });
+ 
+  $tableID.on('click', '.table-edit', function () {
+     
+     const $rows = $tableID.find('tr:not(:hidden)');
+     const headers = [];
+     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+     $tds = $row.find("td");             // Finds all children <td> elements
+     const data = {};
+ 
+     //First part is to get the headers, shouldnt change but incase they ever do
+     $($rows.shift()).find('th:not(:empty)').each(function () {
+         if($(this).text().toLowerCase() != "remove" && $(this).text().toLowerCase() != "save" ){
+             //console.log(headers)
+             headers.push($(this).text().toLowerCase());
+         }
+         else{
+             //console.log($(this).hide)
+         }
+    });
+    //Now we have the table headers!
+    $.each($tds, function(i) {         // Visits every single <td> element
+         if ($(this).hasClass("pt-3-half")){  // Check to make sure its the text fields
+             //console.log($(this).text());   // Prints out the text within the <td>
+             data[headers[i]] = $(this).text();
+         }
+     });
+ 
+     dataSend['old'] = data
+     console.log(dataSend)
+     
+   });
+   */
+ 
+  $tableID.on('click', '.table-remove', function () {
+     
+    $(this).parents('tr').detach();
+  });
+ 
+  $tableID.on('click', '.table-save', function () {
+     
+     const $rows = $tableID.find('tr:not(:hidden)');
+     const headers = [];
+     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+     $tds = $row.find("td");             // Finds all children <td> elements
+     const data = {};
+ 
+     //First part is to get the headers, shouldnt change but incase they ever do
+     $($rows.shift()).find('th:not(:empty)').each(function () {
+         if($(this).text().toLowerCase() != "remove" && $(this).text().toLowerCase() != "save" ){
+             //console.log(headers)
+             headers.push($(this).text().toLowerCase());
+         }
+    });
+    //Now we have the table headers!
+    $.each($tds, function(i) {         // Visits every single <td> element
+         if ($(this).hasClass("pt-3-half")){  // Check to make sure its the text fields
+             //console.log($(this).text());   // Prints out the text within the <td>
+             data[headers[i]] = $(this).text()
+         }
+     });
+ 
+     //Let do the actual saving! for now it goes to the same place as the get
+     $.ajax({
+         url: '/profiles/save',
+         type: 'put',
+         data: JSON.stringify(data),
+         contentType: "application/json",
+         success: function(){
+             console.log( 'Worked' );
+             md.showNotification('top','center','success','Saved User '+ data['username'] + ' Successfully, you can refresh to view changes!')
+         },
+         error: function( jqXhr, textStatus, errorThrown ){
+             console.log( errorThrown );
+             alert("Something went wrong! Changes were not saved. Try again")
+         }
+     });
+ 
+    console.log(data) //Object View in console :)
+     
+  });
+  
+  // A few jQuery helpers for exporting only
+  
+  /*
+  $BTN.on('click', () => {
+ 
+    const $rows = $tableID.find('tr:not(:hidden)');
+    const headers = [];
+    const data = {};
+ 
+ 
+    // Get the headers (add special header logic here)
+    $($rows.shift()).find('th:not(:empty)').each(function () {
+         if($(this).text().toLowerCase() != "remove" && $(this).text().toLowerCase() != "save"){
+             //console.log(headers)
+             headers.push($(this).text().toLowerCase());
+         }
+    });
+ 
+    // Turn all existing rows into a loopable array
+    $rows.each(function () {
+      const $td = $(this).find('td');
+      const h = {};
+      
+      // Use the headers from earlier to name our hash keys
+      headers.forEach((header, i) => {
+ 
+        h[header] = $td.eq(i).text();
+        //console.log(h['person name'])
+        
+      });
+      if(h['username'] == 'Required*' || h['username'].length < 3)
+      {
+         alert("Username must be filled out")
+      }
+      data[h['username']] = h
+    });
+ 
+    // Output the result
+    $EXPORT.text(JSON.stringify(data));
+    $.ajax({
+         url: '/profiles',
+         type: 'put',
+         data: JSON.stringify(data),
+         contentType: "application/json",
+         success: function(){
+             console.log( 'Worked' );
+         },
+         error: function( jqXhr, textStatus, errorThrown ){
+             console.log( errorThrown );
+             alert("Something went wrong! Changes were not saved. Try again")
+         }
+     });
+  });
+  */
+</script>
+
+
+{% endblock javascripts %}

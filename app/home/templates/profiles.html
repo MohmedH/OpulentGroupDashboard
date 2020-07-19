@@ -1,0 +1,120 @@
+{% extends "base-site.html" %}
+
+{% block title %} Profile Page {% endblock %} 
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+
+{% block content %}
+
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="card card-plain">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title mt-0"> Users Table</h4>
+        <p class="card-category"> Please Submit after each row change!</p>
+      </div>
+      <div class="card-body">
+        <div id="tableT" class="table-editable table-responsive">
+          <span class="table-add-new float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button"><i>New User</i></a></span>
+          <table class="table table-hover">
+            <thead>
+              <th>id</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Save</th>
+              <th>Remove</th>
+            </thead>
+            <tbody>
+
+              {% for users in test %}
+
+                <tr>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.id}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.username}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.email}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.name}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{users.role}}</td>
+                <td>
+                    <span class="button-save-test">
+                        <button class="button-save"></button>
+                    </span>
+                </td>
+                <td>
+                    <span>
+                    <button class="button-remove"></button>
+                    </span>
+                </td>
+                </tr>
+
+              {% endfor %}
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE Test -->
+{% block javascripts %}
+  <script src="/static/assets/js/user-table.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('#tableT').after('<div id="nav"></div>');
+      var rowsShown = 7;
+      var rowsTotal = $('#tableT tbody tr').length;
+      var numPages = rowsTotal/rowsShown;
+      for(i = 0;i < numPages;i++) {
+          var pageNum = i + 1;
+          $('#nav').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+      }
+      $('#tableT tbody tr').hide();
+      $('#tableT tbody tr').slice(0, rowsShown).show();
+      $('#nav a:first').addClass('active');
+      $('#nav a').bind('click', function(){
+
+          $('#nav a').removeClass('active');
+          $(this).addClass('active');
+          var currPage = $(this).attr('rel');
+          var startItem = currPage * rowsShown;
+          var endItem = startItem + rowsShown;
+          $('#tableT tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+          css('display','table-row').animate({opacity:1}, 300);
+      });
+    });
+
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tableT");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+            }
+        }
+    }
+  </script>
+
+
+{% endblock javascripts %}

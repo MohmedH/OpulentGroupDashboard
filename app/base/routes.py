@@ -4,6 +4,7 @@ License: MIT
 Copyright (c) 2019 - present AppSeed.us
 """
 import random
+import string
 from flask import jsonify, session, render_template, redirect, request, url_for
 from flask_login import (
     current_user,
@@ -15,9 +16,10 @@ from flask_login import (
 from app import db, login_manager
 from app.base import blueprint
 from app.base.forms import LoginForm, CreateAccountForm
-from app.base.models import User, Portfolio
-
+from app.base.models import User, Portfolio, PasswordReset
+import app.home.emailsend
 from app.base.util import verify_pass, hash_pass
+
 
 @blueprint.route('/')
 def route_default():
@@ -52,17 +54,39 @@ def login():
         return render_template( 'login/login.html', msg='Wrong user or password', form=login_form)
 
     if not current_user.is_authenticated:
-        if 'msg' in session.keys():
-            message = session['msg']
-            session.pop('msg')    
-            return render_template( 'login/login.html',
-                                    form=login_form, msg=message)
-        else:
-            return render_template( 'login/login.html',
+        return render_template( 'login/login.html',
                                     form=login_form)
 
     return redirect(url_for('home_blueprint.index'))
 
+@blueprint.route('/setup', methods=['GET', 'POST'])
+def create_first_user():
+    create_account_form = CreateAccountForm(request.form)
+
+    user = User.query.filter_by(id=1).first()
+
+    if request.method == 'POST':          
+        if user:
+           #print("THIS END POINT IS NOT LONGER VALID")
+           redirect(url_for('base_blueprint.route_default'))
+        else:
+            user = User(**request.form)
+            user.role = 'admin'
+            user.name = 'Admin'
+            #user.created_at = 'n/a'
+            defaultPort = {'email':user.email,'invested':0, 'name':user.name, 'weight':0.0}
+            protfolio = Portfolio(**defaultPort)
+            
+            db.session.add(user)
+            db.session.add(protfolio)
+            db.session.commit()
+
+    if user:
+        return redirect(url_for('base_blueprint.route_default'))
+    else:
+        return render_template( 'login/register.html', form=create_account_form)
+
+'''
 @blueprint.route('/create_user', methods=['GET', 'POST'])
 def create_user():
     login_form = LoginForm(request.form)
@@ -95,48 +119,90 @@ def create_user():
 
     else:
         return render_template( 'login/register.html', form=create_account_form)
+'''
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 @blueprint.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
     #do reset stuff here!
     login_form = LoginForm(request.form)
-    
-    if 'next' in request.form:
-        #Check if email even exisits, if it does generate a code, save code in session, then email the code out, and return template
-        #If email doesn't exist, no need to save any code, just render the page 
-        #session['code'] = str(random.randint(100000000000,999999999999))
-        session['code'] = '12345'
-        session['email'] = request.form['email']
-        #print(session['code'])
-        #Need to replace print with a check to see if the email is real or not, and then send an email based on that
 
-        return render_template( 'login/forgotpass.html',msg=request.form['email'], errM="Check your email for the code!")
-    elif 'reset' in request.form:
-        if request.form['code'] == session['code']:
-            #Now the code's match make sure they are only changing the pass of the intended user, aka it has to be the email you send the code to
-            user = User.query.filter_by(email=session['email']).first()
+    if request.method == 'POST':
+        try:
+            user = User.query.filter_by(email=request.form['email']).first()
             if user:
-                newPass = 'temp' + session['code']
-                print(newPass)
-                pwd = hash_pass( newPass )
-                user.password = pwd
-                db.session.commit()
-                session['msg'] = 'Use this password: temp' + session['code'] + ' and please CHANGE YOUR PASSWORD once you login'
-                return redirect(url_for('base_blueprint.route_default'))
+                code = get_random_string(6)
+                pR = PasswordReset.query.filter_by(uuid=user.uuid).first()
+                if pR:
+                    pR.code = code
+                    db.session.commit()
+                else:
+                    pR = PasswordReset()
+                    pR.code = code
+                    pR.uuid = user.uuid
+                    db.session.add(pR)
+                    db.session.commit()
+                fgTemplate = render_template('forgotpass.html',code=code, url=request.base_url)
+                app.home.emailsend.send_forgotpass__mail.delay(user.email,fgTemplate)
+                return render_template( 'login/forgotpass.html',msg=request.form['email'], errM="If your email was valid, check your email for the link!")
             else:
-                #This means email didn't exist. Probably not possible to get here but just here for usability
-                return render_template( 'login/forgotpass.html', msg=session['email'], errM="Something Went Wrong")
-        else:
-            return render_template( 'login/forgotpass.html', msg=session['email'], errM="Please make sure the code is correct!")
-    else:
-        return render_template( 'login/forgotpass.html')
+                return render_template( 'login/forgotpass.html',msg=request.form['email'], errM="If your email was valid, check your email for the link!")
+        except:
+            return render_template( 'login/forgotpass.html', errM="Something Went Wrong!")
+
     
+    return render_template( 'login/forgotpass.html')
+
+@blueprint.route('/reset_password/<code>', methods=['GET', 'POST'])
+def reset_password_code(code):
+    #do reset stuff here!
+    login_form = LoginForm(request.form)
+
+    try:
+        pR = PasswordReset.query.filter_by(code=code).first()
+
+        if pR:
+            pass
+        else:
+            return render_template('errors/404.html'), 404
+    except:
+        return render_template('errors/500.html'), 500
+
+
+    if request.method == 'POST':
+        try:
+            password = request.form['password']
+            vpassword = request.form['verify']
+
+            if password != vpassword:
+                return render_template('login/resetpass.html', errM="Please make sure the passwords match, and is atleast 8 characters!")
+                #return redirect(url_for('base_blueprint.reset_password_code', code=code))
+
+            user = User.query.filter_by(uuid=pR.uuid).first()
+            pwd = hash_pass(password)
+            user.password = pwd
+
+            db.session.delete(pR)
+            db.session.commit()
+            
+            return redirect(url_for('base_blueprint.route_default'))
+        except:
+            return render_template('login/resetpass.html', errM="Something Went Wrong!")
+
+    
+    return render_template('login/resetpass.html')
+    #return redirect(url_for('base_blueprint.route_default'))
 
 @blueprint.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('base_blueprint.login'))
 
+'''
 @blueprint.route('/shutdown')
 def shutdown():
     func = request.environ.get('werkzeug.server.shutdown')
@@ -144,6 +210,7 @@ def shutdown():
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
     return 'Server shutting down...'
+'''
 
 ## Errors
 

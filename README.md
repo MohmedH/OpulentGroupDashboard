@@ -56,8 +56,32 @@ $ # --host=0.0.0.0 - expose the app on all network interfaces (default 127.0.0.1
 $ # --port=5000    - specify the app port (default 5000)  
 $ flask run --host=0.0.0.0 --port=5000
 $
+$ #In a new terminal, make sure you're in (env) and in the same folder as where you started the app
+$ #Also make sure you have Redis instance running on port 6379
+$
+$ celery -A app.celery worker --loglevel=info
+$
+$
+$ #Also in config you will need a postgres db running on localhost for dev 
+$ #'postgresql://localhost/TOG' it will look for the DB TOG, if you do not have this created, please make one of change this in config.py
+$
+$
 $ # Access the dashboard in browser: http://127.0.0.1:5000/
 ```
+
+Any Changes To The DB will require Alembic Migrations:
+```
+$ flask db migrate  # To detect automatically all the changes.
+$ flask db upgrade  # To apply all the changes.
+
+# The above commands will save, and update the changes to the user model.
+# Because we do not commit DB changes, for these to be applied run this..
+
+$ flask db stamp head  # To set the revision in the database to the head, without performing any migrations. You can change head to the required change you want.
+
+#Followed by the first two commands to bring it all up to date.
+```
+
 
 <br />
 
