@@ -35,9 +35,10 @@
         <div class="card-header card-header-primary">
           <h4 class="card-title mt-0">Pending Deposits</h4>
         </div>
+        <span class="table-add-new float-left mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button">New Deposit</a></span>
         <div class="card-body">
+
           <div id="tableT" class="table-editable table-responsive">
-            <span class="table-add-new float-right mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button"><i>New Deposit</i></a></span>
             <table class="table table-hover">
               <thead>
                 <th>Date</th>
@@ -52,7 +53,10 @@
                 {% for users in pending %}
                   <tr>
                   <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.date}}</b></td>
-                  <td class="pt-3-half" style="color: white;" contenteditable="true">{{"${:,}".format(users.amount)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="true">
+                    <span contenteditable="false"> $ </span> 
+                    {{"{:,}".format(users.amount)}}
+                  </td>
                   <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>
                   <td>
                     <span class="button-save-test">
