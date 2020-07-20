@@ -89,6 +89,7 @@ def init_celery(app, celery):
 def create_app(config, selenium=False):
     app = Flask(__name__, static_folder='base/static')
     app.config.from_object(config)
+    #app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
     if selenium:
         app.config['LOGIN_DISABLED'] = True
     register_extensions(app)

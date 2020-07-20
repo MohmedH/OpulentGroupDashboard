@@ -172,6 +172,7 @@ def deposit():
 
         #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
         pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+        pending = sorted(pending, key=lambda o: o.date)
         history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
         denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
         history = history+denied

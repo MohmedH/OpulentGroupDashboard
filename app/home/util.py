@@ -166,7 +166,7 @@ def deposit_request(content):
         except:
             #THIS WILL BE FOR NEW REQUESTS, DEPOSIT TAKES JUST The First ARGUMENT, Can submit once every week
             depo_req = Deposit.query.filter_by(uuid=user.uuid, status='Pending').all()
-            
+            depo_req = sorted(depo_req, key=lambda o: o.date)
             if depo_req:
                 today = datetime.date.today()
                 lastreq = depo_req[-1].date
@@ -311,7 +311,7 @@ def partners_edit(content):
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
 @celery.task(name='task.update_gain_loss_partners')
-def update_gain_loss_partners(dGLO, updateOnly):
+def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS TABLE -> PARTNERS, DAILY_GAIN_LOSS -> ADMIN 1 ENTRY DAILY
     try:
         
         if updateOnly:
