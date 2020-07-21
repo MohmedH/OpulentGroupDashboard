@@ -83,7 +83,12 @@ def profile_save(content):
             portNew.email = content['email']
             portNew.name = content['name']
             portNew.invested = 0
-            portNew.weight = 0.0
+            portNew.weight = 0
+            portNew.gains = 0
+            portNew.gltotal = 0
+            portNew.losses = 0
+            portNew.withdrawls = 0
+            portNew.total = 0
 
             db.session.add(userNew)
             db.session.add(portNew)
@@ -319,7 +324,26 @@ def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS
             entries = Gain_Loss.query.filter_by(date=dGLO).all()
             data = Daily_Gain_Loss.query.filter_by(date=dGLO).first()
             for entry in entries:
-                entry.amount = data.amount
+                user = User.query.filter_by(uuid=entry.uuid).first()
+                port = Portfolio.query.filter_by(email=user.email).first()
+
+                if data.gainType == 'gain':
+                    port.gains = port.gains - entry.amount
+                    port.gltotal = port.gltotal - entry.amount
+
+                    entry.amount = (data.amount * entry.calcWeight)
+
+                    port.gains = port.gains + (data.amount * entry.calcWeight)
+                    port.gltotal = port.gltotal + (data.amount * entry.calcWeight)
+                else:
+                    port.losses = port.losses - entry.amount
+                    port.gltotal = port.gltotal + entry.amount
+
+                    entry.amount = (data.amount * entry.calcWeight)
+
+                    port.losses = port.losses + (data.amount * entry.calcWeight)
+                    port.gltotal = port.gltotal - (data.amount * entry.calcWeight)
+
                 entry.gainType = data.gainType
                 db.session.commit()
         else:
@@ -328,20 +352,31 @@ def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS
             data = Daily_Gain_Loss.query.filter_by(date=dGLO).first()
             for user in users:
                 nGL = Gain_Loss()
-
+                port = Portfolio.query.filter_by(email=user.email).first()
                 nGL.uuid = user.uuid
                 nGL.date = data.date
-                nGL.amount = data.amount
+
+                if data.gainType == 'gain':
+                    nGL.amount = (data.amount * port.weight)
+
+                    port.gains = port.gains + nGL.amount
+                    port.gltotal = port.gltotal + nGL.amount
+                else:
+                    nGL.amount = (data.amount * port.weight)
+
+                    port.losses = port.losses + nGL.amount
+                    port.gltotal = port.gltotal - nGL.amount
+
+                nGL.calcWeight = port.weight
                 nGL.gainType = data.gainType
                 db.session.add(nGL)
                 db.session.commit()
 
         return True
 
-    except:
+    except Exception as e:
         pass
-        #print('something went wrong!')
-
+        #print(e)
 
 def gains_losses(content):
     try:
