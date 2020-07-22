@@ -2,6 +2,7 @@ from app import db, celery
 from app.base.models import *
 from app.base.util import verify_pass, hash_pass
 from flask_login import current_user
+from flask import g
 from jinja2 import Template
 from app.home.emailsend import send_newuser__mail
 import json
@@ -9,6 +10,16 @@ import datetime
 import string, random
 import os
 import re
+from functools import wraps
+
+
+def getNotifications(f):
+    #DO DB STUFF TO COLLECT NOTIFICATINOS FOR CURRENT USER.
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        g.notifications = {'user':current_user.username,'deposit': 'You have 0 deposits', 'withdrawls':'you have 0 withdrawls', 'update':'Update Gains for the day'}
+        return f(*args, **kwargs)
+    return decorated
 
 def get_random_string(length):
     letters = string.ascii_lowercase

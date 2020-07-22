@@ -44,12 +44,12 @@
                 <p>Disclosure</p>
               </a>
             </li>
-            <li class="nav-item ">
+            <!-- <li class="nav-item ">
               <a class="nav-link" href=/profile/{{current_user.username}}>
                   <i class="material-icons">person</i>
                   <p>My Profile</p>
               </a>
-            </li>
+            </li> -->
             
             <!--ONLY SHOW BOTTOM FOR ADMINS-->
             {% if current_user.u_role == 'admin' %}
@@ -104,12 +104,12 @@
             {% endif %}
             <!--END OF ADMIN OPTIONS-->
 
-            <li class="nav-item ">
+            <!-- <li class="nav-item ">
                 <a class="nav-link" href={{ url_for('base_blueprint.logout') }} >
                     <i class="material-icons">directions_run</i>
                     <p>Logout</p>
                 </a>
-            </li>
+            </li> -->
             {% endif %}
 
           </ul>
