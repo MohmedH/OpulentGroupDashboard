@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from flask_login import UserMixin
-from sqlalchemy import Binary, Column, Integer, String, REAL, Date
+from sqlalchemy import Binary, Column, Integer, String, REAL, Date, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
@@ -131,11 +131,13 @@ class Portfolio(db.Model):
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
     name = Column(String)
-    invested = Column(REAL)
-    weight = Column(REAL)
-    gains = Column(REAL)
-    withdrawls = Column(REAL)
-    total = Column(REAL)
+    invested = Column(Numeric)
+    weight = Column(Numeric, nullable=False)
+    gains = Column(Numeric, nullable=False)
+    losses = Column(Numeric, nullable=False)
+    gltotal = Column(Numeric, default=0)
+    withdrawls = Column(Numeric, nullable=False)
+    total = Column(Numeric, nullable=False)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -154,7 +156,7 @@ class Deposit(db.Model):
     id = Column(Integer, primary_key=True)
     uuid = Column(UUID(as_uuid=True))
     date = Column(Date)
-    amount = Column(REAL)
+    amount = Column(Numeric)
     status = Column(String)
     dateApproved = Column(Date)
 
@@ -174,7 +176,7 @@ class Daily_Gain_Loss(db.Model):
 
     id = Column(Integer, primary_key=True)
     date = Column(Date, unique=True)
-    amount = Column(REAL)
+    amount = Column(Numeric)
     gainType = Column(String)
 
     def __init__(self, **kwargs):
@@ -194,8 +196,9 @@ class Gain_Loss(db.Model):
     id = Column(Integer, primary_key=True)
     uuid = Column(UUID(as_uuid=True))
     date = Column(Date)
-    amount = Column(REAL)
+    amount = Column(Numeric)
     gainType = Column(String)
+    calcWeight = Column(Numeric)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():

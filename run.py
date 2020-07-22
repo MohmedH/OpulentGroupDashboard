@@ -20,7 +20,7 @@ except KeyError:
 
 app = create_app(config_mode)
 init_celery(app, celery)
-Migrate(app, db)
+Migrate(app, db,compare_type=True)
 
 if __name__ == "__main__":
     app.run()

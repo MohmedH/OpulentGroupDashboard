@@ -17,6 +17,7 @@ import json
 
 @blueprint.route('/index')
 @login_required
+@getNotifications
 def index():
     
     if not current_user.is_authenticated:
@@ -24,7 +25,7 @@ def index():
 
     dataPortfolio = Portfolio.query.filter_by(email=current_user.u_email()).first()
 
-    # use this incase of NoneType Errors 
+    # use this incase of NoneType Errors
     if(dataPortfolio):
         investmentAmt = dataPortfolio.invested
         investmentAmt = "{:,}".format(investmentAmt)
@@ -42,6 +43,7 @@ def index():
 
 @blueprint.route('/disclosure')
 @login_required
+@getNotifications
 def page_disclosure():
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
@@ -52,6 +54,7 @@ def page_disclosure():
 #If you ever update email, that is the pm key that connects all the other tables, so you must update that accordingly
 @blueprint.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required
+@getNotifications
 def page_user(username):
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
@@ -144,6 +147,7 @@ def page_user(username):
 
 @blueprint.route('/withdraw', methods=['GET','POST','DELETE'])
 @login_required
+@getNotifications
 def with_draw():
     try:
    
@@ -161,6 +165,7 @@ def with_draw():
 #REGULAR DEPOSIT
 @blueprint.route('/deposit', methods=['GET','POST','DELETE'])
 @login_required
+@getNotifications
 def deposit():
     try:
         #NEW DEPOSIT REQUEST OR EDIT REQUEST
@@ -172,6 +177,7 @@ def deposit():
 
         #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
         pending = Deposit.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+        pending = sorted(pending, key=lambda o: o.date)
         history = Deposit.query.filter_by(uuid=current_user.uuid, status='Approved').all()
         denied = Deposit.query.filter_by(uuid=current_user.uuid, status='Denied').all()
         history = history+denied
@@ -194,6 +200,7 @@ if  current_user.role != 'admin':
 #ADMIN FOR DEPOSIT
 @blueprint.route('/partners/deposit/requests', methods=['GET','POST','DELETE'])
 @login_required
+@getNotifications
 def partners_deposits():
     try:
         if  current_user.role != 'admin':
@@ -216,6 +223,7 @@ def partners_deposits():
 
 @blueprint.route('/partners', methods=['GET','POST'])
 @login_required
+@getNotifications
 def partners():
     try:
         if  current_user.role != 'admin':
@@ -234,6 +242,7 @@ def partners():
 
 @blueprint.route('/profiles', methods=['GET'])
 @login_required
+@getNotifications
 def profile():
     try:
         if  current_user.role != 'admin':
@@ -246,6 +255,7 @@ def profile():
 
 @blueprint.route('/profiles/<action>', methods=['POST', 'PUT', 'DELETE'])
 @login_required
+@getNotifications
 def profileActions(action):
     if  current_user.role != 'admin':
         return json.dumps({'save':'failed'}), 401, {'ContentType':'application/json'}
@@ -269,6 +279,7 @@ def profileActions(action):
 
 @blueprint.route('/update/gains_losses', methods=['GET','POST'])
 @login_required
+@getNotifications
 def update_gains_losses():
     try:
         if  current_user.role != 'admin':
