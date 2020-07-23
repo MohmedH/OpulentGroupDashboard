@@ -150,14 +150,20 @@ def page_user(username):
 @getNotifications
 def with_draw():
     try:
-   
+        #NEW DEPOSIT REQUEST OR EDIT REQUEST
         if request.method == 'POST':
-            print(request.get_json())
-            return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
-            #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+            return withdrawl_request(request.get_json())
+
+        if request.method == 'DELETE':
+            return withdrawl_request_delete(request.get_json())
 
         #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-        return render_template('withdraw.html')
+        pending = Withdrawl.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+        pending = sorted(pending, key=lambda o: o.date)
+        history = Withdrawl.query.filter_by(uuid=current_user.uuid, status='Approved').all()
+        denied = Withdrawl.query.filter_by(uuid=current_user.uuid, status='Denied').all()
+        history = history+denied
+        return render_template('withdraw.html', pending=pending, history=history )
     
     except:
         return render_template('page-500.html'), 500

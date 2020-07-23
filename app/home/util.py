@@ -11,6 +11,7 @@ import string, random
 import os
 import re
 from functools import wraps
+from decimal import Decimal
 
 
 def getNotifications(f):
@@ -26,7 +27,7 @@ def get_random_string(length):
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
 
-@celery.task(name='task.portfolio_rebalance')
+@celery.task(name='task.invested_rebalance')
 def portfolio_rebalance():
     try:
         parteners = Portfolio.query.all()
@@ -36,18 +37,41 @@ def portfolio_rebalance():
             if partner.id == 1:
                 master = partner
                 master.invested = 0
-                master.weight = 1.0
+                #master.weight = 1.0
 
         for partner in parteners:
             if partner.id != 1:
                 master.invested = master.invested + partner.invested
 
+        db.session.commit()
+        total_rebalance.delay()
+    except:
+        pass
+
+@celery.task(name='task.total_rebalance')
+def total_rebalance():
+    try:
+        parteners = Portfolio.query.all()
+        
+        for partner in parteners:
+            partner.total = partner.invested + partner.gltotal + partner.withdrawls
+
+        #Make sure user with ID 1 is the total and weight 1.
+        for partner in parteners:
+            if partner.id == 1:
+                master = partner
+                master.total = 0
+                master.weight = 1.0
+
         for partner in parteners:
             if partner.id != 1:
-                partner.weight = partner.invested / master.invested
+                master.total = master.total + partner.total
 
-        db.session.commit()
-    
+        for partner in parteners:
+            if partner.id != 1:
+                partner.weight = partner.total / master.total
+
+        db.session.commit() 
     except:
         pass
 
@@ -338,7 +362,7 @@ def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS
                 user = User.query.filter_by(uuid=entry.uuid).first()
                 port = Portfolio.query.filter_by(email=user.email).first()
 
-                if data.gainType == 'gain':
+                if data.gainType == 'gain' and entry.gainType == 'gain':
                     port.gains = port.gains - entry.amount
                     port.gltotal = port.gltotal - entry.amount
 
@@ -346,9 +370,28 @@ def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS
 
                     port.gains = port.gains + (data.amount * entry.calcWeight)
                     port.gltotal = port.gltotal + (data.amount * entry.calcWeight)
-                else:
+                
+                elif data.gainType == 'loss' and entry.gainType == 'loss':
                     port.losses = port.losses - entry.amount
                     port.gltotal = port.gltotal + entry.amount
+
+                    entry.amount = (data.amount * entry.calcWeight)
+
+                    port.losses = port.losses + (data.amount * entry.calcWeight)
+                    port.gltotal = port.gltotal - (data.amount * entry.calcWeight)
+                
+                elif data.gainType == 'gain' and entry.gainType == 'loss':
+                    port.losses = port.losses - entry.amount
+                    port.gltotal = port.gltotal + entry.amount
+
+                    entry.amount = (data.amount * entry.calcWeight)
+
+                    port.gains = port.gains + (data.amount * entry.calcWeight)
+                    port.gltotal = port.gltotal + (data.amount * entry.calcWeight)
+
+                else:#data.gainType == 'loss' and entry.gainType == 'gain'
+                    port.gains = port.gains - entry.amount
+                    port.gltotal = port.gltotal - entry.amount
 
                     entry.amount = (data.amount * entry.calcWeight)
 
@@ -383,6 +426,7 @@ def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS
                 db.session.add(nGL)
                 db.session.commit()
 
+        total_rebalance.delay()
         return True
 
     except Exception as e:
@@ -395,7 +439,8 @@ def gains_losses(content):
         entry = Daily_Gain_Loss.query.filter_by(date=content['date']).first()
 
         if entry:
-
+            #TO DO RESTRICT EDIT AFTER A NEW DATE HAS BEEN PUT IN BECAUSE OF COMPOUND WEIGHTS RECALC TOO MUCH WORK
+ 
             entry.amount = re.sub("[^\d\.]", "", content['amount'])
             
             if content['gain or loss'].lower() != 'gain' and content['gain or loss'].lower() != 'loss':
@@ -425,5 +470,195 @@ def gains_losses(content):
 
         return json.dumps({'Gain/Loss Update':'success'}), 200, {'ContentType':'application/json'}
     
+    except:
+        return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
+
+def update_taxes_fees_paidout(uuid,date):
+    try:
+        with_req = Withdrawl.query.filter_by(uuid=uuid, date=date).first()
+        taxAndfee = taxes_fees.query.first()
+
+        tax = taxAndfee.taxes
+        fee = taxAndfee.fees
+
+        amount = with_req.amount
+
+        with_req.taxes = amount * tax
+        with_req.fees = amount * fee
+        with_req.paidout = with_req.amount - with_req.taxes - with_req.fees
+        
+        db.session.commit()
+
+        #print("FINISHED")
+    except:
+        pass
+        #print("ERROR IN UPDATING TAXES AND FEES")
+
+
+def withdrawl_request(content):
+    try:
+        user = User.query.filter_by(username=current_user.username).first()
+        
+        #WILL HAVE TO DO THE CHECKS IN EACH TRY EXCEPT
+        #amnt = content['withdrawl amount']
+        #DO CHECK TO MAKE SURE THEY CAN EVEN WITHDRAW THIS MUCH
+        
+        try:
+            amnt = content['withdrawl amount']
+            changeAmonut = re.sub("[^\d\.]", "", amnt)
+            status = content['status']
+            date = content['date']
+            
+            port = Portfolio.query.filter_by(email=user.email).first()
+            if (port.total - Decimal(changeAmonut)) < 0:
+                return json.dumps({'Withdrawl Edit':'Failed'}), 400, {'ContentType':'application/json'}
+
+            if status != 'Pending':
+                return json.dumps({'Withdrawl Edit':'Failed'}), 400, {'ContentType':'application/json'}
+
+            with_req = Withdrawl.query.filter_by(uuid=user.uuid, date=date, status='Pending').first()
+            
+            if with_req:
+                
+                with_req.amount = changeAmonut
+                db.session.commit()
+                update_taxes_fees_paidout(with_req.uuid, with_req.date)
+
+            else:
+                return json.dumps({'Withdraw Edit':'Failed'}), 400, {'ContentType':'application/json'}
+
+            
+            return json.dumps({'Withdraw Edit':'success'}), 200, {'ContentType':'application/json'}
+
+        except:
+            #THIS WILL BE FOR NEW REQUESTS, DEPOSIT TAKES JUST The First ARGUMENT, Can submit once every week
+            
+            with_req = Withdrawl.query.filter_by(uuid=user.uuid, status='Pending').all()
+            with_req = sorted(with_req, key=lambda o: o.date)
+            if with_req:
+                today = datetime.date.today()
+                lastreq = with_req[-1].date
+                diff = today - lastreq
+                if diff.days < 6:
+                    return json.dumps({'Withdrawl Request':'Failed Need To wait 6 days from last one'}), 400, {'ContentType':'application/json'}
+                
+            for item in content:
+                amount = re.sub("[^\d\.]", "", content[item])
+                break
+            
+            port = Portfolio.query.filter_by(email=user.email).first()
+            if (port.total - Decimal(amount)) < 0:
+                return json.dumps({'Withdrawl Edit':'Failed'}), 400, {'ContentType':'application/json'}
+
+            new_withdrawl = Withdrawl()
+            new_withdrawl.uuid = user.uuid
+            new_withdrawl.amount = amount
+            new_withdrawl.status = 'Pending'
+            new_withdrawl.date = datetime.datetime.now().date()
+        
+            db.session.add(new_withdrawl)
+            db.session.commit()
+            update_taxes_fees_paidout(new_withdrawl.uuid, new_withdrawl.date)
+
+            return json.dumps({'Withdrawl Request':'success'}), 200, {'ContentType':'application/json'}
+
+         
+        return json.dumps({'Withdrawl Request':'Server Error'}), 500, {'ContentType':'application/json'}
+
+    except:
+        return json.dumps({'Withdrawl Request':'failed'}), 400, {'ContentType':'application/json'}
+
+#Delete any current open requests
+def withdrawl_request_delete(content):
+    try:
+        #print(content)
+        if content['status'] != 'Pending':
+            return json.dumps({'Withdraw Delete':'failed'}), 400, {'ContentType':'application/json'}
+        
+        date = content['date']
+        #amount = content['deposit amount'] Possibly use amount also for search to get 
+
+        with_req = Withdrawl.query.filter_by(uuid=current_user.uuid, date=date, status='Pending').first()
+
+        if with_req:
+            if with_req.status != 'Pending':
+                return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+            
+            db.session.delete(with_req)
+            db.session.commit()
+        else:
+            return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+        return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+def withdrawl_request_admin_approve(content):
+    try:
+        
+        date = content['date']
+        user = content['user id']
+        first_user = User.query.filter_by(id=1).first()
+        #amount = content['deposit amount'] Possibly use amount also for search to get 
+
+        del_req = Deposit.query.filter_by(uuid=user, date=date, status='Pending').first()
+
+        if del_req:
+            
+            #TO DO ADD THE AMOUNT SENT IN, TO PORTFOLIO AND THEN MARK AS APPROVED
+            if del_req.uuid != first_user.uuid:
+                acc = User.query.filter_by(uuid=del_req.uuid).first()
+                port = Portfolio.query.filter_by(email=acc.email).first()
+
+                port.invested += del_req.amount
+
+            del_req.status = "Approved"
+            del_req.dateApproved = datetime.datetime.now().date()
+
+            #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
+            # if content['deposit amount'] != del_req.amount:
+            #     del_req.amount = content['deposit amount']
+            
+            db.session.commit()
+            portfolio_rebalance.delay()
+
+        else:
+            return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
+
+
+       
+        return json.dumps({'Deposit Approved':'success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
+
+def withdrawl_request_admin_deny(content):
+    try:
+        
+        date = content['date']
+        user = content['user id']
+        #amount = content['deposit amount'] Possibly use amount also for search to get 
+
+        del_req = Deposit.query.filter_by(uuid=user, date=date, status='Pending').first()
+
+        if del_req:
+            if del_req.status != 'Pending':
+                return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+            del_req.status = "Denied"
+            del_req.dateApproved = datetime.datetime.now().date()
+
+            #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
+            # if content['deposit amount'] != del_req.amount:
+            #     del_req.amount = content['deposit amount']
+            
+            db.session.commit()
+            
+
+        else:
+            return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
+
+
+       
+        return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
