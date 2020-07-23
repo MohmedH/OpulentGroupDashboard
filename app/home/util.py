@@ -54,7 +54,7 @@ def total_rebalance():
         parteners = Portfolio.query.all()
         
         for partner in parteners:
-            partner.total = partner.invested + partner.gltotal + partner.withdrawls
+            partner.total = (partner.invested + partner.gltotal) - partner.withdrawls
 
         #Make sure user with ID 1 is the total and weight 1.
         for partner in parteners:
@@ -340,7 +340,7 @@ def partners_edit(content):
 
         if port:
             if port.id != 1:
-                port.invested = re.sub("[^\d\.]", "", content['invested'])
+                port.invested = re.sub("[^\d\.]", "", content['deposited'])
                 db.session.commit()
                 #portfolio_rebalance()
         else:
@@ -473,27 +473,6 @@ def gains_losses(content):
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
 
-def update_taxes_fees_paidout(uuid,date):
-    try:
-        with_req = Withdrawl.query.filter_by(uuid=uuid, date=date).first()
-        taxAndfee = taxes_fees.query.first()
-
-        tax = taxAndfee.taxes
-        fee = taxAndfee.fees
-
-        amount = with_req.amount
-
-        with_req.taxes = amount * tax
-        with_req.fees = amount * fee
-        with_req.paidout = with_req.amount - with_req.taxes - with_req.fees
-        
-        db.session.commit()
-
-        #print("FINISHED")
-    except:
-        pass
-        #print("ERROR IN UPDATING TAXES AND FEES")
-
 
 def withdrawl_request(content):
     try:
@@ -521,8 +500,17 @@ def withdrawl_request(content):
             if with_req:
                 
                 with_req.amount = changeAmonut
+
+                taxAndfee = taxes_fees.query.first()
+                tax = taxAndfee.taxes
+                fee = taxAndfee.fees
+
+                changeAmonut = Decimal(changeAmonut)
+                with_req.taxes = changeAmonut * tax
+                with_req.fees = changeAmonut * fee
+                with_req.paidout = changeAmonut - with_req.taxes - with_req.fees
+
                 db.session.commit()
-                update_taxes_fees_paidout(with_req.uuid, with_req.date)
 
             else:
                 return json.dumps({'Withdraw Edit':'Failed'}), 400, {'ContentType':'application/json'}
@@ -549,16 +537,24 @@ def withdrawl_request(content):
             port = Portfolio.query.filter_by(email=user.email).first()
             if (port.total - Decimal(amount)) < 0:
                 return json.dumps({'Withdrawl Edit':'Failed'}), 400, {'ContentType':'application/json'}
-
+      
             new_withdrawl = Withdrawl()
             new_withdrawl.uuid = user.uuid
             new_withdrawl.amount = amount
             new_withdrawl.status = 'Pending'
             new_withdrawl.date = datetime.datetime.now().date()
+
+            taxAndfee = taxes_fees.query.first()
+            tax = taxAndfee.taxes
+            fee = taxAndfee.fees
+            amount = Decimal(amount)
+            new_withdrawl.taxes = amount * tax
+            new_withdrawl.fees = amount * fee
+            new_withdrawl.paidout = amount - new_withdrawl.taxes - new_withdrawl.fees
         
             db.session.add(new_withdrawl)
             db.session.commit()
-            update_taxes_fees_paidout(new_withdrawl.uuid, new_withdrawl.date)
+           
 
             return json.dumps({'Withdrawl Request':'success'}), 200, {'ContentType':'application/json'}
 
@@ -601,26 +597,30 @@ def withdrawl_request_admin_approve(content):
         first_user = User.query.filter_by(id=1).first()
         #amount = content['deposit amount'] Possibly use amount also for search to get 
 
-        del_req = Deposit.query.filter_by(uuid=user, date=date, status='Pending').first()
-
-        if del_req:
+        with_req = Withdrawl.query.filter_by(uuid=user, date=date, status='Pending').first()
+        
+        if with_req:
             
             #TO DO ADD THE AMOUNT SENT IN, TO PORTFOLIO AND THEN MARK AS APPROVED
-            if del_req.uuid != first_user.uuid:
-                acc = User.query.filter_by(uuid=del_req.uuid).first()
+            if with_req.uuid != first_user.uuid:
+                acc = User.query.filter_by(uuid=with_req.uuid).first()
                 port = Portfolio.query.filter_by(email=acc.email).first()
 
-                port.invested += del_req.amount
+                port.withdrawls += with_req.amount
 
-            del_req.status = "Approved"
-            del_req.dateApproved = datetime.datetime.now().date()
+                portt = Portfolio.query.filter_by(id=1).first()
+                portt.withdrawls += with_req.amount
+
+
+            with_req.status = "Approved"
+            with_req.dateApproved = datetime.datetime.now().date()
 
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:
             #     del_req.amount = content['deposit amount']
             
             db.session.commit()
-            portfolio_rebalance.delay()
+            total_rebalance.delay()
 
         else:
             return json.dumps({'DB Error':'failed'}), 400, {'ContentType':'application/json'}
@@ -638,7 +638,7 @@ def withdrawl_request_admin_deny(content):
         user = content['user id']
         #amount = content['deposit amount'] Possibly use amount also for search to get 
 
-        del_req = Deposit.query.filter_by(uuid=user, date=date, status='Pending').first()
+        del_req = Withdrawl.query.filter_by(uuid=user, date=date, status='Pending').first()
 
         if del_req:
             if del_req.status != 'Pending':

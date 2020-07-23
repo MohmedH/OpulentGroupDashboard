@@ -227,6 +227,29 @@ def partners_deposits():
     except:
         return render_template('page-500.html'), 500
 
+@blueprint.route('/partners/withdrawl/requests', methods=['GET','POST','DELETE'])
+@login_required
+@getNotifications
+def partners_withdrawls():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+
+        if request.method == 'POST':
+            return withdrawl_request_admin_approve(request.get_json())
+
+        if request.method == 'DELETE':
+            return withdrawl_request_admin_deny(request.get_json())
+        
+        dReqs = Withdrawl.query.filter_by(status='Pending').all()
+        history = Withdrawl.query.filter_by(status='Approved').all()
+        history = history + Withdrawl.query.filter_by(status='Denied').all()
+        users = User.query.all()
+        return render_template('partners-withdrawls.html', pending=dReqs, users=users, history=history)
+
+    except:
+        return render_template('page-500.html'), 500
+
 @blueprint.route('/partners', methods=['GET','POST'])
 @login_required
 @getNotifications

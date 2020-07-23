@@ -44,6 +44,9 @@
                 <th>Date</th>
                 <th>Withdrawl Amount</th>
                 <th>Status</th>
+                <th>Taxes</th>
+                <th>Fees</th>
+                <th>Pay Out</th>
                 <th>Submit</th>
                 <th>Remove</th>
 
@@ -58,6 +61,15 @@
                     {{"{:,}".format(users.amount)}}
                   </td>
                   <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">
+                    {{"${:,}".format(users.taxes)}}
+                  </td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">
+                    {{"${:,}".format(users.fees)}}
+                  </td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">
+                    {{"${:,}".format(users.paidout)}}
+                  </td>
                   <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>
@@ -94,10 +106,10 @@
             <table class="table table-hover">
               <thead>
                 <th>Date</th>
-                <th>Paid Out Amount</th>
-                <th>The Opulent Group Fee</th>
-                <th>Taxes Paid</th>
                 <th>Withdrawl Amount</th>
+                <th>Taxes</th>
+                <th>Fees</th>
+                <th>Paid Out</th>
                 <th>Status</th>
               </thead>
               <tbody>
@@ -106,6 +118,9 @@
                   <tr>
                   <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.date}}</b></td>
                   <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.amount)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.taxes)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.fees)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.paidout)}}</td>
                   <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>            
                   </tr>
                   {% endfor %}

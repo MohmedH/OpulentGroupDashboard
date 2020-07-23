@@ -1,0 +1,180 @@
+{% extends "base-site.html" %}
+
+{% block title %}Admin - Withdrawl{% endblock %} 
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+
+{% block content %}
+
+<h2 style="color: white; text-align: center;"><b>Withdrawl Management</b></h2>
+
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="card card-plain">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title mt-0"> Current Deposit Requests</h4>
+      </div>
+      <div class="card-body">
+        <div id="tableT" class="table-editable table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Withdrawl Amount</th>
+              <th>Taxes</th>
+              <th>Fees</th>
+              <th>Pay Out</th>
+              <th>Approve</th>
+              <th>Deny</th>
+            </thead>
+            <tbody>
+
+              {%for withdrawl in pending%}
+                <tr>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{withdrawl.uuid}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>
+                  {%for user in users%}
+                    {%if user.uuid == withdrawl.uuid%}
+                      {{user.name}}
+                    {%endif%}
+                  {%endfor%}
+                </b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{withdrawl.date}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.amount)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.taxes)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.fees)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.paidout)}}</td>
+                <td>
+                    <span class="button-save-test">
+                        <button class="button-save"></button>
+                    </span>
+                </td>
+                <td>
+                    <span>
+                        <button class="button-remove"></button>
+                    </span>
+                </td>
+                </tr>
+                {%endfor%}
+ 
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="card card-plain">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title mt-0">Deposit History</h4>
+      </div>
+      <div class="card-body">
+        <div id="table" class="table-editable table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Withdrawl Amount</th>
+              <th>Taxes</th>
+              <th>Fees</th>
+              <th>Pay Out</th>
+              <th>Status</th>
+            </thead>
+            <tbody>
+
+              {%for withdrawl in history%}
+                <tr>
+                <td class="pt-3-half" style="color: white;" contenteditable="false" style="display:none"><b>{{withdrawl.uuid}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>
+                  {%for user in users%}
+                    {%if user.uuid == withdrawl.uuid%}
+                      {{user.name}}
+                    {%endif%}
+                  {%endfor%}
+                </b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{withdrawl.date}}</b></td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.amount)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.taxes)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.fees)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(withdrawl.paidout)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{withdrawl.status}}</td>
+                </tr>
+                {%endfor%}
+ 
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE Test -->
+{% block javascripts %}
+  <script src="/static/assets/js/withdraw-table-admin.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('#tableT').after('<div id="nav"></div>');
+      var rowsShown = 7;
+      var rowsTotal = $('#tableT tbody tr').length;
+      var numPages = rowsTotal/rowsShown;
+      for(i = 0;i < numPages;i++) {
+          var pageNum = i + 1;
+          $('#nav').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+      }
+      $('#tableT tbody tr').hide();
+      $('#tableT tbody tr').slice(0, rowsShown).show();
+      $('#nav a:first').addClass('active');
+      $('#nav a').bind('click', function(){
+
+          $('#nav a').removeClass('active');
+          $(this).addClass('active');
+          var currPage = $(this).attr('rel');
+          var startItem = currPage * rowsShown;
+          var endItem = startItem + rowsShown;
+          $('#tableT tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+          css('display','table-row').animate({opacity:1}, 300);
+      });
+    });
+  </script>
+
+<script>
+  $(document).ready(function(){
+    $('#table').after('<div id="navv"></div>');
+    var rowsShown = 4;
+    var rowsTotal = $('#table tbody tr').length;
+    var numPages = rowsTotal/rowsShown;
+    for(i = 0;i < numPages;i++) {
+        var pageNum = i + 1;
+        $('#navv').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+    }
+    $('#table tbody tr').hide();
+    $('#table tbody tr').slice(0, rowsShown).show();
+    $('#navv a:first').addClass('active');
+    $('#navv a').bind('click', function(){
+
+        $('#navv a').removeClass('active');
+        $(this).addClass('active');
+        var currPage = $(this).attr('rel');
+        var startItem = currPage * rowsShown;
+        var endItem = startItem + rowsShown;
+        $('#table tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+        css('display','table-row').animate({opacity:1}, 300);
+    });
+  });
+</script>
+
+
+{% endblock javascripts %}
