@@ -103,12 +103,10 @@
             type: 'PUT',
             contentType: "application/json",
             success: function(){
-                var response = $(XmlHttpRequest.responseText).text();
-                console.log(response)
-                md.showNotification('top','center','success','Saved New Fee Amount: '+ data['fee'] + ' Successfully, you can refresh to view changes!')
+                md.showNotification('top','center','success','Sent Request. If Status changes to pending, it is working on it. Click once more and refresh until success!')
             },
             error: function( jqXhr, textStatus, errorThrown ){
-                md.showNotification('top','center','danger','Error! Could Not Save')
+                md.showNotification('top','center','danger','Error! Something went wrong!')
             }
         });
     });

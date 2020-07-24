@@ -19,9 +19,74 @@ def getNotifications(f):
     #DO DB STUFF TO COLLECT NOTIFICATINOS FOR CURRENT USER.
     @wraps(f)
     def decorated(*args, **kwargs):
-        g.notifications = {'user':current_user.username,'deposit': 'You have 0 deposits', 'withdrawls':'you have 0 withdrawls', 'update':'Update Gains for the day'}
+        noti = dict()
+        deposit = 0
+        withdrawls = 0
+
+        if current_user.role == 'admin':
+            alerts = notification.query.filter_by(to='admin').all()
+            for alert in alerts:
+                if alert.service == 'deposit':
+                    deposit += 1
+                elif alert.service == 'withdrawl':
+                    withdrawls += 1
+                else:
+                    pass
+            
+            if deposit != 0:
+                noti['deposit'] = 'You have ' + str(deposit) + ' active deposit request(s)'
+            
+            if withdrawls != 0:
+                noti['withdrawls'] = 'You have ' + str(withdrawls) + ' active withdrawl request(s)'
+        else:
+            alerts = notification.query.filter_by(uuid=current_user.uuid, to='user').all()
+            for alert in alerts:
+                if alert.service == 'deposit':
+                    deposit += 1
+                elif alert.service == 'withdrawl':
+                    withdrawls += 1
+                else:
+                    pass
+            
+            if deposit != 0:
+                noti['deposit'] = 'There is ' + str(deposit) + ' update to your deposit request(s)'
+            
+            if withdrawls != 0:
+                noti['withdrawls'] = 'There is ' + str(withdrawls) + ' update to your withdrawl request(s)'
+
+
+                
+
+        #noti['deposit'] = "YOU HAVE 5 DEPOSITS"
+        g.notifications = noti
         return f(*args, **kwargs)
     return decorated
+
+def clear_noti():
+    try:
+
+        if current_user.role == 'admin':
+            alll = notification.query.filter_by(to='admin').all()
+            for noti in alll:
+                noti.to = "clear"
+                db.session.commit()
+        else:
+            uuid = current_user.uuid
+            
+            alll = notification.query.filter_by(uuid=uuid, to='user').all()
+            for noti in alll:
+                db.session.delete(noti)
+                db.session.commit()
+
+            # alll = notification.query.filter_by(uuid=uuid).all()
+            # for noti in alll:
+            #     noti.to = "clear"
+            #     db.session.commit()
+
+
+    except:
+        pass
+
 
 def get_random_string(length):
     letters = string.ascii_lowercase
@@ -226,6 +291,13 @@ def deposit_request(content):
             new_deposit.uuid = user.uuid
             
             db.session.add(new_deposit)
+
+            noti = notification()
+            noti.uuid = user.uuid
+            noti.to = 'admin'
+            noti.service = 'deposit'
+            db.session.add(noti)
+
             db.session.commit()
 
             return json.dumps({'Deposit Request':'success'}), 200, {'ContentType':'application/json'}
@@ -253,6 +325,8 @@ def deposit_request_delete(content):
                 return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
             
             db.session.delete(del_req)
+            noti = notification.query.filter_by(uuid=del_req.uuid).first()
+            db.session.delete(noti)
             db.session.commit()
 
         else:
@@ -286,6 +360,9 @@ def deposit_request_admin_approve(content):
             del_req.status = "Approved"
             del_req.dateApproved = datetime.datetime.now().date()
 
+            noti = notification.query.filter_by(uuid=del_req.uuid).first()
+            noti.to = 'user'
+        
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:
             #     del_req.amount = content['deposit amount']
@@ -318,6 +395,9 @@ def deposit_request_admin_deny(content):
             del_req.status = "Denied"
             del_req.dateApproved = datetime.datetime.now().date()
 
+            noti = notification.query.filter_by(uuid=del_req.uuid).first()
+            noti.to = 'user'
+           
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:
             #     del_req.amount = content['deposit amount']
@@ -554,6 +634,13 @@ def withdrawl_request(content):
             new_withdrawl.paidout = amount - new_withdrawl.taxes - new_withdrawl.fees
         
             db.session.add(new_withdrawl)
+
+            noti = notification()
+            noti.uuid = user.uuid
+            noti.to = 'admin'
+            noti.service = 'withdrawl'
+            db.session.add(noti)
+
             db.session.commit()
            
 
@@ -582,6 +669,8 @@ def withdrawl_request_delete(content):
                 return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
             
             db.session.delete(with_req)
+            noti = notification.query.filter_by(uuid=with_req.uuid).first()
+            db.session.delete(noti)
             db.session.commit()
         else:
             return json.dumps({'Deposit Delete':'failed'}), 400, {'ContentType':'application/json'}
@@ -616,6 +705,9 @@ def withdrawl_request_admin_approve(content):
             with_req.status = "Approved"
             with_req.dateApproved = datetime.datetime.now().date()
 
+            noti = notification.query.filter_by(uuid=with_req.uuid).first()
+            noti.to = 'user'
+
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:
             #     del_req.amount = content['deposit amount']
@@ -647,6 +739,9 @@ def withdrawl_request_admin_deny(content):
 
             del_req.status = "Denied"
             del_req.dateApproved = datetime.datetime.now().date()
+
+            noti = notification.query.filter_by(uuid=with_req.uuid).first()
+            noti.to = 'user'
 
             #DO THE BELOW INCASE ADMIN CHANGES IT MANUALLY, BUT MUST CLEAR THE $xxxxx
             # if content['deposit amount'] != del_req.amount:

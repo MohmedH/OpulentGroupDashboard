@@ -45,16 +45,28 @@
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                       {% if g['notifications']|length == 0 %}
                           <a class="dropdown-item" href="javascript:void(0)">No Notifications</a>
+                      {%else%}
+                        {% for notification in g['notifications'] %}
+                          {% if current_user.role == 'admin'%}
+                            {% if notification == 'deposit'%}
+                              <a class="dropdown-item" href="/partners/deposit/requests">{{g['notifications'][notification]}}</a>
+                            {% elif notification == 'withdrawls' %}
+                              <a class="dropdown-item" href="/partners/withdrawl/requests">{{g['notifications'][notification]}}</a>
+                            {% else %}
+                              <a class="dropdown-item" href="/update/gains_losses">{{g['notifications'][notification]}}</a>
+                            {%endif%}
+                          {%else%}
+                            {% if notification == 'deposit'%}
+                              <a class="dropdown-item" href="/deposit">{{g['notifications'][notification]}}</a>
+                            {% elif notification == 'withdrawls' %}
+                              <a class="dropdown-item" href="/withdraw">{{g['notifications'][notification]}}</a>
+                            {% else %}
+                              <a class="dropdown-item" href="/update/gains_losses">{{g['notifications'][notification]}}</a>
+                            {%endif%}
+                          {%endif%}   
+                        {% endfor %}
+                        <a class="dropdown-item" href="/clear/notifications"><i class="material-icons">clear</i> Clear Notifications</a>
                       {%endif%}
-                      {% for notification in g['notifications'] %}
-                        {% if notification == 'deposit' %}
-                          <a class="dropdown-item" href="/partners/deposit/requests">{{g['notifications'][notification]}}</a>
-                        {% elif notification == 'withdrawls' %}
-                          <a class="dropdown-item" href="javascript:void(0)">{{g['notifications'][notification]}}</a>
-                        {% else %}
-                          <a class="dropdown-item" href="/update/gains_losses">{{g['notifications'][notification]}}</a>
-                        {%endif%}
-                      {% endfor %}
                     </div>
                   </li>
 

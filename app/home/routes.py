@@ -352,6 +352,13 @@ def tax_fee():
         return render_template('page-500.html'), 500
 
 
+@blueprint.route('/clear/notifications', methods=['GET'])
+@login_required
+def clear_notification():
+    clear_noti()
+    return redirect(url_for('home_blueprint.index'))
+
+
 @blueprint.route('/<template>')
 def route_template(template):
 
