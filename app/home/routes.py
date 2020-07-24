@@ -323,6 +323,34 @@ def update_gains_losses():
     except:
         return render_template('page-500.html'), 500
 
+@blueprint.route('/configure/tax_fee', methods=['GET','POST','PUT'])
+@login_required
+@getNotifications
+def tax_fee():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+            
+        if request.method == 'POST':
+            #print("GOT YOUR POST")
+            update_tax_fee(request.get_json())
+            #print(content['tax'])
+
+        if request.method == 'PUT':
+            healthCheck()         
+            #print(task.status)
+            #return json.dumps({'Gain/Loss Update':'success'}), 200, {'ContentType':'application/json'}
+        
+        try:
+            tf = taxes_fees.query.all()
+            hc = celery_health.query.first()
+            return render_template('taxandfee.html', tf=tf, hc=hc)
+        except:
+            return render_template('taxandfee.html')
+
+    except:
+        return render_template('page-500.html'), 500
+
 
 @blueprint.route('/<template>')
 def route_template(template):

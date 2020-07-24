@@ -12,6 +12,7 @@ import os
 import re
 from functools import wraps
 from decimal import Decimal
+from celery.result import AsyncResult
 
 
 def getNotifications(f):
@@ -662,3 +663,71 @@ def withdrawl_request_admin_deny(content):
         return json.dumps({'Deposit Delete':'success'}), 200, {'ContentType':'application/json'}
     except:
         return json.dumps({'Request Format Bad':'failed'}), 400, {'ContentType':'application/json'}
+
+def update_tax_fee(content):
+
+    try:
+        taxAndfee = taxes_fees.query.first()
+
+        if taxAndfee:
+            pass
+        else:
+            tf = taxes_fees()
+            tf.taxes = 0
+            tf.fees = 0
+            db.session.add(tf)
+            db.session.commit()
+
+        if 'tax' in content.keys():
+            tax = re.sub("[^\d\.]", "", content['tax'])
+            tax = float(tax) / 100
+
+            taxAndfee.taxes = tax
+            db.session.commit()
+            return json.dumps({'Tax Update':'Success'}), 200, {'ContentType':'application/json'}  
+        else:
+            fee = re.sub("[^\d\.]", "", content['fee'])
+            fee = float(fee) / 100
+
+            taxAndfee.fees = fee
+            db.session.commit()
+            return json.dumps({'Fee Update':'Success'}), 200, {'ContentType':'application/json'}
+    except:
+        return json.dumps({'Update':'failed'}), 400, {'ContentType':'application/json'}
+        pass
+
+@celery.task(name='task.health_check')
+def workerHealthCheck():
+    try:
+        x = 1
+        y = 2
+        z = x + y
+        return z
+    except:
+        pass
+
+def healthCheck():
+    try:
+        hc = celery_health().query.first()
+        
+        if hc:
+            if hc.status == 'PENDING':
+                res = celery.AsyncResult(hc.taskID)
+                if res.status == 'SUCCESS':
+                    hc.status = res.status
+                    db.session.commit()
+                return False
+            else:
+                db.session.delete(hc)
+                db.session.commit()
+                return True
+
+        task = workerHealthCheck.delay()
+        hc = celery_health()
+        hc.taskID = task.id
+        hc.status = task.status
+        db.session.add(hc)
+        db.session.commit()
+    except Exception as e:
+        pass
+
