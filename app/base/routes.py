@@ -74,7 +74,7 @@ def create_first_user():
             user.role = 'admin'
             user.name = 'Admin'
             #user.created_at = 'n/a'
-            defaultPort = {'email':user.email,'invested':0, 'name':user.name, 'weight':0.0}
+            defaultPort = {'email':user.email,'invested':0, 'name':user.name, 'weight':0.0, 'gains':0, 'losses':0, 'gltotal':0, 'withdrawls':0, 'total':0}
             protfolio = Portfolio(**defaultPort)
             
             db.session.add(user)
