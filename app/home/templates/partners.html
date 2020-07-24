@@ -22,7 +22,11 @@
               <th>id</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Invested</th>
+              <th>Deposited</th>
+              <th>Gains</th>
+              <th>Losses</th>
+              <th>Withdrawls</th>
+              <th>Total</th>
               <th>Weight</th>
               <th>Save</th>
             </thead>
@@ -34,8 +38,12 @@
                 <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.id}}</b></td>
                 <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.name}}</b></td>
                 <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.email}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="true">{{"${:,}".format(users.invested)}}</td>
-                <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.weight}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="true">{{"${:,.2f}".format(users.invested)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,.2f}".format(users.gains)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,.2f}".format(users.losses)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,.2f}".format(users.withdrawls)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,.2f}".format(users.total)}}</td>
+                <td class="pt-3-half" style="color: white;" contenteditable="false">{{"{:.3f}".format(users.weight)}}</td>
                 <td>
                     <span class="button-save-test">
                         <button class="button-save"></button>

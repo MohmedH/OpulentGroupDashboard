@@ -150,14 +150,20 @@ def page_user(username):
 @getNotifications
 def with_draw():
     try:
-   
+        #NEW DEPOSIT REQUEST OR EDIT REQUEST
         if request.method == 'POST':
-            print(request.get_json())
-            return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
-            #return json.dumps({'save':'success'}), 200, {'ContentType':'application/json'}
+            return withdrawl_request(request.get_json())
+
+        if request.method == 'DELETE':
+            return withdrawl_request_delete(request.get_json())
 
         #Normal Get Reqs, Going to have to send a list of all current requests with this rendertemplate, and also a few completed requests
-        return render_template('withdraw.html')
+        pending = Withdrawl.query.filter_by(uuid=current_user.uuid, status='Pending').all()
+        pending = sorted(pending, key=lambda o: o.date)
+        history = Withdrawl.query.filter_by(uuid=current_user.uuid, status='Approved').all()
+        denied = Withdrawl.query.filter_by(uuid=current_user.uuid, status='Denied').all()
+        history = history+denied
+        return render_template('withdraw.html', pending=pending, history=history )
     
     except:
         return render_template('page-500.html'), 500
@@ -217,6 +223,29 @@ def partners_deposits():
         history = history + Deposit.query.filter_by(status='Denied').all()
         users = User.query.all()
         return render_template('partners-deposits.html', pending=dReqs, users=users, history=history)
+
+    except:
+        return render_template('page-500.html'), 500
+
+@blueprint.route('/partners/withdrawl/requests', methods=['GET','POST','DELETE'])
+@login_required
+@getNotifications
+def partners_withdrawls():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+
+        if request.method == 'POST':
+            return withdrawl_request_admin_approve(request.get_json())
+
+        if request.method == 'DELETE':
+            return withdrawl_request_admin_deny(request.get_json())
+        
+        dReqs = Withdrawl.query.filter_by(status='Pending').all()
+        history = Withdrawl.query.filter_by(status='Approved').all()
+        history = history + Withdrawl.query.filter_by(status='Denied').all()
+        users = User.query.all()
+        return render_template('partners-withdrawls.html', pending=dReqs, users=users, history=history)
 
     except:
         return render_template('page-500.html'), 500
@@ -293,6 +322,41 @@ def update_gains_losses():
 
     except:
         return render_template('page-500.html'), 500
+
+@blueprint.route('/configure/tax_fee', methods=['GET','POST','PUT'])
+@login_required
+@getNotifications
+def tax_fee():
+    try:
+        if  current_user.role != 'admin':
+            return render_template('page-403.html'), 403
+            
+        if request.method == 'POST':
+            #print("GOT YOUR POST")
+            update_tax_fee(request.get_json())
+            #print(content['tax'])
+
+        if request.method == 'PUT':
+            healthCheck()         
+            #print(task.status)
+            #return json.dumps({'Gain/Loss Update':'success'}), 200, {'ContentType':'application/json'}
+        
+        try:
+            tf = taxes_fees.query.all()
+            hc = celery_health.query.first()
+            return render_template('taxandfee.html', tf=tf, hc=hc)
+        except:
+            return render_template('taxandfee.html')
+
+    except:
+        return render_template('page-500.html'), 500
+
+
+@blueprint.route('/clear/notifications', methods=['GET'])
+@login_required
+def clear_notification():
+    clear_noti()
+    return redirect(url_for('home_blueprint.index'))
 
 
 @blueprint.route('/<template>')

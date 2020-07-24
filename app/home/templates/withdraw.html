@@ -1,9 +1,141 @@
 {% extends "base-site.html" %}
 
-{% block title %} Dashboard {% endblock %} 
+{% block title %} Withdrawls {% endblock %} 
 
 {% block content %}
 
+  <h2 style="color: white; text-align: center;"><b>Withdrawls</b></h2>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Help Me!
+  </button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tips</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <p>-Please Enter Numerical Amount i.e $5,000 enter as 5000 For New Deposits.</p>
+            <p>-You may only have 1 active Pending request every 7 days.</p>
+            <p>-The Amount field you are able to always edit. If it's pending, you can change and save the new amount</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header card-header-primary">
+          <h4 class="card-title mt-0">Pending Deposits</h4>
+        </div>
+        <span class="table-add-new float-left mb-3 mr-2"><a href="#!" class="btn btn-success btn-rounded" role="button">New Deposit</a></span>
+        <div class="card-body">
+
+          <div id="tableT" class="table-editable table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Date</th>
+                <th>Withdrawl Amount</th>
+                <th>Status</th>
+                <th>Taxes</th>
+                <th>Fees</th>
+                <th>Pay Out</th>
+                <th>Submit</th>
+                <th>Remove</th>
+
+              </thead>
+              <tbody>
+  
+                {% for users in pending %}
+                  <tr>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.date}}</b></td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="true">
+                    <span contenteditable="false"> $ </span> 
+                    {{"{:,}".format(users.amount)}}
+                  </td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">
+                    {{"${:,}".format(users.taxes)}}
+                  </td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">
+                    {{"${:,}".format(users.fees)}}
+                  </td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">
+                    {{"${:,}".format(users.paidout)}}
+                  </td>
+                  <td>
+                    <span class="button-save-test">
+                        <button class="button-save"></button>
+                    </span>
+                  </td>
+                  <td>
+                    <span>
+                    <button class="button-remove"></button>
+                    </span>
+                  </td>
+            
+                  </tr>
+                  {% endfor %}
+
+                  
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header card-header-primary">
+          <h4 class="card-title mt-0">Deposit History</h4>
+        </div>
+        <div class="card-body">
+          <div id="table" class="table-editable table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <th>Date</th>
+                <th>Withdrawl Amount</th>
+                <th>Taxes</th>
+                <th>Fees</th>
+                <th>Paid Out</th>
+                <th>Status</th>
+              </thead>
+              <tbody>
+  
+                {% for users in history %}
+                  <tr>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false"><b>{{users.date}}</b></td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.amount)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.taxes)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.fees)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{"${:,}".format(users.paidout)}}</td>
+                  <td class="pt-3-half" style="color: white;" contenteditable="false">{{users.status}}</td>            
+                  </tr>
+                  {% endfor %}
+
+                  
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+  <!-- Second Row Of Info Start-->
   <h3 style="color: white;"><b>Portfolio Stats</b></h3>
   <!-- Second Row Of Info Start-->
   <div class="row justify-content-center">
@@ -80,44 +212,6 @@
   </div>
 
 
-  <div class="col-md-3">
-    <div class="card">
-      <div class="card-body">
-          
-        <div class="card-header">
-            <h4 style="color: white;"><b>Submit Withdraw Request </b></h4>
-            <p class="card-category" style="color: white;">(No Commas. ex $5,000 enter as 5000)</p>
-          </div>
-       
-        <form role="form" method="post" action="">
-          <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                  <label class="bmd-label-floating">Amount</label>
-                  <input type="text" class="form-control">
-                </div>
-            </div>
-          </div>
-          <button type="submit" name="updateProfile" class="btn btn-primary pull-right">Submit</button>
-          <div class="clearfix"></div>
-        </form>
-        <button class="btn btn-primary btn-block" onclick="myFunction()">works b/c outside form</button>
-
-      </div>
-    </div>
-  </div>
-  
-
-
-  <h3 style="color: white;"><b>Current Request Status</b></h3>
-  <div class="col-md-2">
-    <div class="card">
-        <div class="card-body"style="color: white;" >
-            <b>Pending... None</b>
-        </div>
-      </div>
-  </div>
-  
 
 
         
@@ -127,23 +221,57 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
-<script>
-    function myFunction() {
-        $.ajax({
-                url: '/withdraw',
-                type: 'POST',
-                data: JSON.stringify("hello"),
-                contentType: "application/json",
-                success: function(){
-                    md.showNotification('top','center','success','Withdraw Request Successful')
-                },
-                error: function( jqXhr, textStatus, errorThrown ){
-                    md.showNotification('top','center','danger','Error! Not Implemented Yet!')
-                }
-            });
-    }
-    
+    <script src="/static/assets/js/withdraw-table.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('#tableT').after('<div id="nav"></div>');
+        var rowsShown = 5;
+        var rowsTotal = $('#tableT tbody tr').length;
+        var numPages = rowsTotal/rowsShown;
+        for(i = 0;i < numPages;i++) {
+            var pageNum = i + 1;
+            $('#nav').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+        }
+        $('#tableT tbody tr').hide();
+        $('#tableT tbody tr').slice(0, rowsShown).show();
+        $('#nav a:first').addClass('active');
+        $('#nav a').bind('click', function(){
 
-</script>
+            $('#nav a').removeClass('active');
+            $(this).addClass('active');
+            var currPage = $(this).attr('rel');
+            var startItem = currPage * rowsShown;
+            var endItem = startItem + rowsShown;
+            $('#tableT tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+            css('display','table-row').animate({opacity:1}, 300);
+        });
+    });
+    </script>
 
-{% endblock javascripts %}
+   <script>
+    $(document).ready(function(){
+        $('#table').after('<div id="navv"></div>');
+        var rowsShown = 5;
+        var rowsTotal = $('#table tbody tr').length;
+        var numPages = rowsTotal/rowsShown;
+        for(i = 0;i < numPages;i++) {
+            var pageNum = i + 1;
+            $('#navv').append('<a style="font-size:17px" href="#" rel="'+i+'">'+pageNum+'</a>...');
+        }
+        $('#table tbody tr').hide();
+        $('#table tbody tr').slice(0, rowsShown).show();
+        $('#navv a:first').addClass('active');
+        $('#navv a').bind('click', function(){
+
+            $('#navv a').removeClass('active');
+            $(this).addClass('active');
+            var currPage = $(this).attr('rel');
+            var startItem = currPage * rowsShown;
+            var endItem = startItem + rowsShown;
+            $('#table tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
+            css('display','table-row').animate({opacity:1}, 300);
+        });
+    });
+    </script>
+
+{% endblock javascripts %}  

@@ -210,3 +210,82 @@ class Gain_Loss(db.Model):
                 value = value[0]
                 
             setattr(self, property, value)
+
+class Withdrawl(db.Model):
+    __tablename__ = 'WithdrawlRequests'
+
+    id = Column(Integer, primary_key=True)
+    uuid = Column(UUID(as_uuid=True))
+    date = Column(Date)
+    amount = Column(Numeric)
+    fees = Column(Numeric)
+    taxes = Column(Numeric)
+    paidout = Column(Numeric)
+    status = Column(String)
+    dateApproved = Column(Date)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+                
+            setattr(self, property, value)
+
+class taxes_fees(db.Model):
+    __tablename__ = 'TaxesandFees'
+
+    id = Column(Integer, primary_key=True)
+    taxes = Column(Numeric)
+    fees = Column(Numeric)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+                
+            setattr(self, property, value)
+
+class celery_health(db.Model):
+    __tablename__ = 'CeleryHealth'
+
+    id = Column(Integer, primary_key=True)
+    taskID = Column(String)
+    status = Column(String)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+                
+            setattr(self, property, value)
+
+class notification(db.Model):
+    __tablename__ = 'Notifications'
+
+    id = Column(Integer, primary_key=True)
+    uuid = Column(UUID(as_uuid=True))
+    service = Column(String)
+    to = Column(String)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+                
+            setattr(self, property, value)

@@ -1,0 +1,117 @@
+{% extends "base-site.html" %}
+
+{% block title %} Tax & Fee {% endblock %} 
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+
+{% block content %}
+
+<h2 style="color: white; text-align: center;"><b>Current Taxes & Fees Charged</b></h2>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+              <i class="large material-icons">attach_money</i>
+            </div>
+            <p class="card-category">Taxes Charged</p>
+            {%if tf%}
+            <span contenteditable="True" id='tax'> <h3 class="card-title"><b>{{(tf[0]['taxes'])*100}}<span contenteditable="false">%</span></b></h3></span>
+            {%else%}
+            <span contenteditable="True" id='tax'> <h3 class="card-title"> <b>0%</b> </h3>  </span>
+            {%endif%}
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <span class="tax-save float-right"><a href="#!" class="btn btn-success btn-rounded" role="button">Save</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+              <i class="large material-icons">attach_money</i>
+            </div>
+            <p class="card-category">Fees Charged</p>
+            {%if tf%}
+            <span contenteditable="True" id='fee'> <h3 class="card-title"> <b>{{(tf[0]['fees'])*100}}%</b> </h3>  </span>
+            {%else%}
+            <span contenteditable="True" id='fee'> <h3 class="card-title"> <b>0%</b> </h3>  </span>
+            {%endif%}
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <span class="fee-save float-right"><a href="#!" class="btn btn-success btn-rounded" role="button">Save</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+{%if hc%}
+<h2 style="color: white; text-align: center;"><b>Celery Worker Health Check: {{hc.status}} </b></h2> <span class="health-check float-right"><a href="#!" class="btn btn-success btn-rounded" role="button">Check Now!</a></span>
+{%else%}
+<h2 style="color: white; text-align: center;"><b>Celery Worker Health Check: No Active Tests </b></h2> <span class="health-check float-right"><a href="#!" class="btn btn-success btn-rounded" role="button">Check Now!</a></span>
+{%endif%}
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE Test -->
+{% block javascripts %}
+
+<script>
+    $('.tax-save').on('click', () => {
+        data = {'tax':document.getElementById('tax').innerText}
+        
+        $.ajax({
+            url: '/configure/tax_fee',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(){
+                md.showNotification('top','center','success','Saved New Tax Amount: '+ data['tax'] + ' Successfully, you can refresh to view changes!')
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                md.showNotification('top','center','danger','Error! Could Not Save')
+            }
+        });
+    });
+
+    $('.fee-save').on('click', () => {
+        data = {'fee':document.getElementById('fee').innerText}
+
+        $.ajax({
+            url: '/configure/tax_fee',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(){
+                md.showNotification('top','center','success','Saved New Fee Amount: '+ data['fee'] + ' Successfully, you can refresh to view changes!')
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                md.showNotification('top','center','danger','Error! Could Not Save')
+            }
+        });
+    });
+
+    $('.health-check').on('click', () => {
+        
+        $.ajax({
+            url: '/configure/tax_fee',
+            type: 'PUT',
+            contentType: "application/json",
+            success: function(){
+                md.showNotification('top','center','success','Sent Request. If Status changes to pending, it is working on it. Click once more and refresh until success!')
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                md.showNotification('top','center','danger','Error! Something went wrong!')
+            }
+        });
+    });
+
+</script>
+
+  
+{% endblock javascripts %}
