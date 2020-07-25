@@ -6,6 +6,7 @@
 
 - SQLite, PostgreSQL, SQLAlchemy ORM
 - Alembic (DB schema migrations)
+- Celery Asynchronus Work
 - Modular design with **Blueprints**
 - Session-Based authentication (via **flask_login**)
 - Forms validation
@@ -63,7 +64,7 @@ $ celery -A app.celery worker --loglevel=info
 $
 $
 $ #Also in config you will need a postgres db running on localhost for dev 
-$ #'postgresql://localhost/TOG' it will look for the DB TOG, if you do not have this created, please make one of change this in config.py
+$ #'postgresql://localhost/TOG' it will look for the DB name TOG, if you do not have this created, please make one or change the name to match in config.py!
 $
 $
 $ # Access the dashboard in browser: http://127.0.0.1:5000/
@@ -81,7 +82,6 @@ $ flask db stamp head  # To set the revision in the database to the head, withou
 
 #Followed by the first two commands to bring it all up to date.
 ```
-
 
 <br />
 
@@ -105,5 +105,7 @@ $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose u
 ```
 
 *If you used server_name and it is set up properly, you will be able to access this site directly at that domain.
+
+App Is Configured to run with SSL certs ready. This includes the cookie in config.py being served over secure. If you do not have SSL, please change the nginx config, as well as make sure to set SESSION_COOKIE_SECURE=FALSE in config.py.
 
 Visit `http://localhost` or `127.0.0.1` in your browser. The app should be up & running. We expose port 5005 For the application internally, and expose port 80 to the internet. All request come in at port 80 and go through NGINX and are passed along to app:5005 then handeled my gunicorn.
