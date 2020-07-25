@@ -39,6 +39,7 @@ class ProductionConfig(Config):
     # Security
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SECURE = True
     REMEMBER_COOKIE_DURATION = 3600
 
     # PostgreSQL database
