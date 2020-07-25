@@ -4,7 +4,7 @@
 
 {% block content %}
   
-  <h3 style="color: white;"><b>Overview</b></h3> 
+<h2 style="color: white; text-align: center;"><b>Overview</b></h2>
   <div class="row">
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
@@ -13,7 +13,7 @@
             <i class="large material-icons">attach_money</i>
           </div>
           <p class="card-category">Currently Investing</p>
-          <h3 class="card-title"> <b>$6,600,000</b> </h3>
+          <h3 class="card-title"> <b>{{"${:,.2f}".format(port.total|default(0, true))}}</b> </h3>
         </div>
         <div class="card-footer">
           <div class="stats">
@@ -26,12 +26,16 @@
 
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
+        {% if port.gltotal >= 0 %}
         <div class="card-header card-header-success card-header-icon">
+        {%else%}
+        <div class="card-header card-header-danger card-header-icon">
+        {%endif%}
           <div class="card-icon">
             <i class="material-icons">attach_money</i>
           </div>
           <p class="card-category">Gains & Losses</p> <!--Change from danger to success based on + or - -->
-          <h3 class="card-title">$600,000</h3>
+          <h3 class="card-title">{{"${:,.2f}".format(port.gltotal|default(0, true))}}</h3>
         </div>
         <div class="card-footer">
           <div class="stats">
@@ -42,12 +46,20 @@
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
+
+        {% if (port.gltotal / (port.invested - port.withdrawls)) >= 0 %}
+        <div class="card-header card-header-success card-header-icon">
+        {%else%}
         <div class="card-header card-header-danger card-header-icon">
+        {%endif%}
+
           <div class="card-icon">
             <i class="material-icons">change_history</i>
           </div>
           <p class="card-category">Gains & Losses</p> <!--Change from danger to success based on + or - -->
-          <h3 class="card-title">10%</h3>
+          <h3 class="card-title">
+            {{"{:.2f}".format(port.gltotal / (port.invested - port.withdrawls)*100|default(0, true))}}%
+          </h3>
         </div>
         <div class="card-footer">
           <div class="stats">
@@ -63,8 +75,10 @@
           <div class="card-icon">
             <i class="large material-icons">attach_money</i>
           </div>
-          <p class="card-category">Amount Invested</p>
-          <h3 class="card-title"> <b>${{investAMT | safe}}</b> </h3>
+          <p class="card-category">Amount Deposited</p>
+          <h3 class="card-title">
+              <b>{{"${:,.2f}".format((port.invested - port.withdrawls)|default(0, true))}}</b> 
+          </h3>
         </div>
         <div class="card-footer">
           <div class="stats">
@@ -77,9 +91,9 @@
   </div>
   <!-- First Row Of Info END-->
 
-  <h2 style="color: white;"><b>Portfolio Stats</b></h2>
+  <h2 style="color: white; text-align: center;"><b>Portfolio Stats</b></h2>
   <!-- Second Row Of Info Start-->
-  <div class="row justify-content-center">
+  <!-- <div class="row justify-content-center">
 
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
@@ -96,15 +110,16 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+    <!--Change from danger to success based on + or - -->
+    <!-- <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
         <div class="card-header card-header-success card-header-icon">
           <div class="card-icon">
             <i class="material-icons">attach_money</i>
           </div>
-          <p class="card-category">Take Home Gains</p> <!--Change from danger to success based on + or - -->
+          <p class="card-category">Take Home Gains</p> 
           <h3 class="card-title">$420,000</h3>
         </div>
         <div class="card-footer">
@@ -113,15 +128,16 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+    <!--Change from danger to success based on + or - -->
+    <!-- <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
         <div class="card-header card-header-danger card-header-icon">
           <div class="card-icon">
             <i class="material-icons">money_off</i>
           </div>
-          <p class="card-category">Taxes Charged</p> <!--Change from danger to success based on + or - -->
+          <p class="card-category">Taxes Charged</p> 
           <h3 class="card-title">$120,000</h3>
         </div>
         <div class="card-footer">
@@ -130,16 +146,16 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-
-    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+    <!--Change from danger to success based on + or - -->
+    <!-- <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
         <div class="card-header card-header-danger card-header-icon">
           <div class="card-icon">
             <i class="material-icons">money_off</i>
           </div>
-          <p class="card-category">Opulent Group Fees</p> <!--Change from danger to success based on + or - -->
+          <p class="card-category">Opulent Group Fees</p> 
           <h3 class="card-title">$60,000</h3>
         </div>
         <div class="card-footer">
@@ -150,14 +166,40 @@
       </div>
     </div>
 
+  </div> -->
+  <div class="row">
+    <div class="col-xl-6 col-lg-12">
+      <canvas id="doughnut-chartt" ></canvas>
+    </div>
+    <div class="col-xl-6 col-lg-12">
+      <canvas id="doughnut-chart" ></canvas>
+    </div>
   </div>
+  </br>
+
+
+  <div class="row">
+    <canvas id="dailyChart"></canvas>
+  </div>
+  </br>
+
+  <div class="row">
+    <canvas id="weeklyChart"></canvas>
+  </div>
+  </br>
+  
+  <div class="row">
+    <canvas id="bar-chart" width="800" height="450"></canvas>
+  </div>
+  
+
 
 
 
   <!-- Row of Graphs -->
-    <div class="row">
+    <!-- <div class="row"> -->
       <!-- First Graph -->
-      <div class="col-xl-4 col-lg-12">
+      <!-- <div class="col-xl-4 col-lg-12">
         <div class="card card-chart">
           
           <div id="colorChart" class="card-header card-header-success">
@@ -167,7 +209,7 @@
             <h4 class="card-title">Daily Performance</h4>
             <p class="card-category">
               <span class="text-success"><i class="fa fa-long-arrow-up"></i> 60% </span> Today</p>
-          </div>
+          </div> -->
           <!--
           <div class="card-footer">
             <div class="stats">
@@ -175,11 +217,11 @@
             </div>
           </div>
           -->
-        </div>
-      </div>
+        <!-- </div>
+      </div> -->
       <!-- End Of First Graph --> 
       <!-- Third Graph -->
-      <div class="col-xl-4 col-lg-12">
+      <!-- <div class="col-xl-4 col-lg-12">
         <div class="card card-chart">
           <div class="card-header card-header-danger">
             <div class="ct-chart" id="completedTasksChart"></div>
@@ -187,7 +229,7 @@
           <div class="card-body">
             <h4 class="card-title">Weekly Performance</h4>
             <p class="card-category">Updates End Of The Week</p>
-          </div>
+          </div> -->
           <!--
           <div class="card-footer">
             <div class="stats">
@@ -195,11 +237,11 @@
             </div>
           </div>
           -->
-        </div>
-      </div>
+        <!-- </div>
+      </div> -->
       <!-- End Of Third Graph -->
       <!-- Second Graph -->
-      <div class="col-xl-4 col-lg-12">
+      <!-- <div class="col-xl-4 col-lg-12">
         <div class="card card-chart">
           <div class="card-header card-header-warning">
             <div class="ct-chart" id="websiteViewsChart"></div>
@@ -207,7 +249,7 @@
           <div class="card-body">
             <h4 class="card-title">Monthly Performance</h4>
             <p class="card-category">Updates End Of The Month</p>
-          </div>
+          </div> -->
           <!--
           <div class="card-footer">
             <div class="stats">
@@ -215,13 +257,13 @@
             </div>
           </div>
           -->
-        </div>
-      </div>
+        <!-- </div>
+      </div> -->
       <!-- End Of Second Graph -->
-    </div>
+    <!-- </div> -->
     <!-- End Of Row Of Graphs -->
 
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-lg-6 col-md-12">
         <div class="card">
           <div class="card-header card-header-primary">
@@ -511,7 +553,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
         
 {% endblock content %}
 
@@ -519,7 +561,125 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
+
   <script>
+    var ctx = document.getElementById('dailyChart').getContext('2d');
+    var info = {{ chart|safe }};
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            datasets: [{
+                label: 'Daily Gains',
+                backgroundColor: 'rgb(40, 235, 137)',
+                borderColor: 'rgb(5, 161, 82)',
+                data: info["series"]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx = document.getElementById('weeklyChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: ['Week One', 'Week Two', 'Week Three', 'Week Four'],
+            datasets: [{
+                label: 'Weekly Performance',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(163, 28, 56)',
+                data: [-100, 0, 5, 2]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+  </script>
+  <script>
+    var num = {{port.invested - port.withdrawls}}
+    var num2 = {{port.gltotal}}
+    if(num2 < 0){
+      data1 = [num,0,num2]
+    }
+    else{
+      data1 = [num,num2,0]
+    }
+
+      new Chart(document.getElementById("doughnut-chart"), {
+      type: 'doughnut',
+        data: {
+          labels: ["Amount Deposited", "Gains", "Losses"],
+          datasets: [
+            {
+              label: "Amount (Dollars)",
+              backgroundColor: ["#3e95cd", "rgb(40, 235, 137)","rgb(255, 99, 132)"],
+              data: data1
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'Amount Put In vs. Gains/Losses'
+          }
+        }
+      });
+
+      var w = {{port.weight}}
+      new Chart(document.getElementById("doughnut-chartt"), {
+      type: 'doughnut',
+        data: {
+          labels: ["Entire Portfolio Weight", "My Weight"],
+          datasets: [
+            {
+              label: "Weight in %",
+              backgroundColor: ["#3cba9f","#c45850"],
+              data: [1-w,w]
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'My Weight vs Entire Porfolio'
+          }
+        }
+      });
+
+      new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+          labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+          datasets: [
+            {
+              label: "Population (millions)",
+              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+              data: [2478,5267,734,784,433]
+            }
+          ]
+        },
+        options: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Predicted world population (millions) in 2050'
+          }
+        }
+    });
+
+  </script>
+
+  <!-- <script>
     $(window).on("load",function() {
       // Javascript method's body can be found in assets/js/demos.js
       var info = {{ chart|safe }};
@@ -550,6 +710,6 @@
     });
 
 
-  </script>
+  </script> -->
 
 {% endblock javascripts %}

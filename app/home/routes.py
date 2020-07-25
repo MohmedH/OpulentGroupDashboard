@@ -24,13 +24,14 @@ def index():
         return redirect(url_for('base_blueprint.login'))
 
     dataPortfolio = Portfolio.query.filter_by(email=current_user.u_email()).first()
+    #dataPortfolio = None
 
     # use this incase of NoneType Errors
-    if(dataPortfolio):
-        investmentAmt = dataPortfolio.invested
-        investmentAmt = "{:,}".format(investmentAmt)
-    else:
-        investmentAmt = 'error'
+    #if(dataPortfolio):
+        #total = dataPortfolio.invested
+        #investmentAmt = "{:,}".format(investmentAmt)
+   #else:
+        #investmentAmt = 'error'
 
         #Use the bottom to update rows
         #data.invested = 50
@@ -39,7 +40,7 @@ def index():
     dataDailySalesChart["labels"] = ['M', 'T', 'W', 'TH', 'F']
     dataDailySalesChart["series"] = [900, 500, 400, -120, 500]
 
-    return render_template('index.html', chart = dataDailySalesChart, investAMT=investmentAmt)
+    return render_template('index.html', chart = dataDailySalesChart, port=dataPortfolio)
 
 @blueprint.route('/disclosure')
 @login_required
