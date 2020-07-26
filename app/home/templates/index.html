@@ -47,18 +47,27 @@
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
 
-        {% if (port.gltotal / (port.invested - port.withdrawls)) >= 0 %}
-        <div class="card-header card-header-success card-header-icon">
+        {%if port.invested - port.withdrawls != 0 %}
+          {% if (port.gltotal / (port.invested - port.withdrawls)) >= 0 %}
+          <div class="card-header card-header-success card-header-icon">
+          {%else%}
+          <div class="card-header card-header-danger card-header-icon">
+          {%endif%}
         {%else%}
-        <div class="card-header card-header-danger card-header-icon">
+          <div class="card-header card-header-success card-header-icon">
         {%endif%}
+
 
           <div class="card-icon">
             <i class="material-icons">change_history</i>
           </div>
           <p class="card-category">Gains & Losses</p> <!--Change from danger to success based on + or - -->
           <h3 class="card-title">
-            {{"{:.2f}".format(port.gltotal / (port.invested - port.withdrawls)*100|default(0, true))}}%
+            {%if port.invested - port.withdrawls != 0 %}
+              {{"{:.2f}".format(port.gltotal / (port.invested - port.withdrawls)*100|default(0, true))}}%
+            {%else%}
+              {{"{:.2f}".format(0|default(0, true))}}%
+            {%endif%}
           </h3>
         </div>
         <div class="card-footer">
@@ -177,16 +186,16 @@
   </div>
   </br>
 
-
-  <div class="row">
+  <!--style="background-color: beige;" -->
+  <div class="row"> 
     <canvas id="dailyChart"></canvas>
   </div>
   </br>
 
-  <div class="row">
+  <!-- <div class="row">
     <canvas id="weeklyChart"></canvas>
   </div>
-  </br>
+  </br> -->
   
   <div class="row">
     <canvas id="bar-chart" width="800" height="450"></canvas>
@@ -565,7 +574,8 @@
 
   <script>
     var ctx = document.getElementById('dailyChart').getContext('2d');
-    var info = {{ chart|safe }};
+    var test = {{daily}}
+        
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'line',
@@ -577,7 +587,7 @@
                 label: 'Daily Gains',
                 backgroundColor: 'rgb(40, 235, 137)',
                 borderColor: 'rgb(5, 161, 82)',
-                data: info["series"]
+                data: test
             }]
         },
 
@@ -585,25 +595,25 @@
         options: {}
     });
 
-    var ctx = document.getElementById('weeklyChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
+    // var ctx = document.getElementById('weeklyChart').getContext('2d');
+    // var chart = new Chart(ctx, {
+    //     // The type of chart we want to create
+    //     type: 'line',
 
-        // The data for our dataset
-        data: {
-            labels: ['Week One', 'Week Two', 'Week Three', 'Week Four'],
-            datasets: [{
-                label: 'Weekly Performance',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(163, 28, 56)',
-                data: [-100, 0, 5, 2]
-            }]
-        },
+    //     // The data for our dataset
+    //     data: {
+    //         labels: ['Week One', 'Week Two', 'Week Three', 'Week Four'],
+    //         datasets: [{
+    //             label: 'Weekly Performance',
+    //             backgroundColor: 'rgb(255, 99, 132)',
+    //             borderColor: 'rgb(163, 28, 56)',
+    //             data: [-100, 0, 5, 2]
+    //         }]
+    //     },
 
-        // Configuration options go here
-        options: {}
-    });
+    //     // Configuration options go here
+    //     options: {}
+    // });
   </script>
   <script>
     var num = {{port.invested - port.withdrawls}}
@@ -656,15 +666,16 @@
         }
       });
 
+      var dataM = {{monthly}}
       new Chart(document.getElementById("bar-chart"), {
         type: 'bar',
         data: {
-          labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+          labels: ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
           datasets: [
             {
-              label: "Population (millions)",
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-              data: [2478,5267,734,784,433]
+              label: "Gain/Loss ($)",
+              backgroundColor: ["#3e95cd", "#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd", "#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd"],
+              data: dataM
             }
           ]
         },
@@ -672,7 +683,7 @@
           legend: { display: false },
           title: {
             display: true,
-            text: 'Predicted world population (millions) in 2050'
+            text: 'Monthly Gains / Losses'
           }
         }
     });

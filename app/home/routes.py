@@ -14,6 +14,8 @@ from flask_login import login_required, current_user
 from app import login_manager, db
 from jinja2 import TemplateNotFound
 import json
+from datetime import datetime, timedelta
+
 
 @blueprint.route('/index')
 @login_required
@@ -23,24 +25,49 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
 
+   
+    day = datetime.today().strftime('%A')
+    if day == 'Monday':
+        filterr = datetime.today()
+        gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -1).filter_by(uuid=current_user.uuid).all()
+    elif day == 'Tuesday':
+        filterr = datetime.now().date()
+        gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -2).filter_by(uuid=current_user.uuid).all()
+    elif day == 'Wednesday':
+        filterr = datetime.now().date()
+        gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -3).filter_by(uuid=current_user.uuid).all()
+    elif day == 'Thursday':
+        filterr = datetime.now().date()
+        gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -4).filter_by(uuid=current_user.uuid).all()
+    elif day == 'Friday':
+        filterr = datetime.now().date()
+        gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -5).filter_by(uuid=current_user.uuid).all()
+    else:
+        filterr = datetime.now().date()
+        gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -7).filter_by(uuid=current_user.uuid).all()
+
+    
     dataPortfolio = Portfolio.query.filter_by(email=current_user.u_email()).first()
-    #dataPortfolio = None
+    
+    dat = []
+    gainAndLoss = sorted(gainAndLoss, key=lambda o: o.date)
+    for i in gainAndLoss:
+        if i.gainType == 'gain':
+            dat.append(float(i.amount))
+        else:
+            dat.append(float(-i.amount))
 
-    # use this incase of NoneType Errors
-    #if(dataPortfolio):
-        #total = dataPortfolio.invested
-        #investmentAmt = "{:,}".format(investmentAmt)
-   #else:
-        #investmentAmt = 'error'
+    gainAndL = Gain_Loss.query.filter_by(uuid=current_user.uuid).all()
+    datM = [0] * 12
+    for entry in gainAndL:
+        date = entry.date
+        if entry.gainType == 'gain':
+            datM[date.month - 1] += float(entry.amount)
+        else:
+            datM[date.month - 1] -= float(entry.amount)
 
-        #Use the bottom to update rows
-        #data.invested = 50
-        #db.session.commit()
-    dataDailySalesChart = {}
-    dataDailySalesChart["labels"] = ['M', 'T', 'W', 'TH', 'F']
-    dataDailySalesChart["series"] = [900, 500, 400, -120, 500]
 
-    return render_template('index.html', chart = dataDailySalesChart, port=dataPortfolio)
+    return render_template('index.html', port=dataPortfolio, daily=dat, monthly=datM)
 
 @blueprint.route('/disclosure')
 @login_required
@@ -220,6 +247,7 @@ def partners_deposits():
             return deposit_request_admin_deny(request.get_json())
         
         dReqs = Deposit.query.filter_by(status='Pending').all()
+        dReqs = sorted(dReqs, key=lambda o: o.date)
         history = Deposit.query.filter_by(status='Approved').all()
         history = history + Deposit.query.filter_by(status='Denied').all()
         users = User.query.all()
@@ -243,6 +271,7 @@ def partners_withdrawls():
             return withdrawl_request_admin_deny(request.get_json())
         
         dReqs = Withdrawl.query.filter_by(status='Pending').all()
+        dReqs = sorted(dReqs, key=lambda o: o.date)
         history = Withdrawl.query.filter_by(status='Approved').all()
         history = history + Withdrawl.query.filter_by(status='Denied').all()
         users = User.query.all()
@@ -266,6 +295,7 @@ def partners():
                 return r
 
             partners = Portfolio.query.all()
+            partners = sorted(partners, key=lambda o: o.id)
             return render_template('partners.html', partner=partners)
     except:
         return render_template('page-500.html'), 500
@@ -279,6 +309,7 @@ def profile():
             return render_template('page-403.html'), 403
         else:
             users = User.query.all()
+            users = sorted(users, key=lambda o: o.id)
             return render_template('profiles.html', test=users)
     except:
         return render_template('page-500.html'), 500
@@ -319,6 +350,7 @@ def update_gains_losses():
                 return gains_losses(request.get_json())
         
         dailyGloss = Daily_Gain_Loss.query.all()
+        dailyGloss = sorted(dailyGloss, key=lambda o: o.date)
         return render_template('updategains.html', info=dailyGloss)
 
     except:
