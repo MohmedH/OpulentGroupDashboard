@@ -25,54 +25,52 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
 
-    try:
+    # try:
 
    
-        day = datetime.today().strftime('%A')
-        if day == 'Monday':
-            filterr = datetime.today()
-            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -1).filter_by(uuid=current_user.uuid).all()
-        elif day == 'Tuesday':
-            filterr = datetime.now().date()
-            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -2).filter_by(uuid=current_user.uuid).all()
-        elif day == 'Wednesday':
-            filterr = datetime.now().date()
-            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -3).filter_by(uuid=current_user.uuid).all()
-        elif day == 'Thursday':
-            filterr = datetime.now().date()
-            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -4).filter_by(uuid=current_user.uuid).all()
-        elif day == 'Friday':
-            filterr = datetime.now().date()
-            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -5).filter_by(uuid=current_user.uuid).all()
-        else:
-            filterr = datetime.now().date()
-            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -7).filter_by(uuid=current_user.uuid).all()
+    #     day = datetime.today().strftime('%A')
+    #     if day == 'Monday':
+    #         filterr = datetime.today()
+    #         gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -1).filter_by(uuid=current_user.uuid).all()
+    #     elif day == 'Tuesday':
+    #         filterr = datetime.now().date()
+    #         gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -2).filter_by(uuid=current_user.uuid).all()
+    #     elif day == 'Wednesday':
+    #         filterr = datetime.now().date()
+    #         gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -3).filter_by(uuid=current_user.uuid).all()
+    #     elif day == 'Thursday':
+    #         filterr = datetime.now().date()
+    #         gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -4).filter_by(uuid=current_user.uuid).all()
+    #     elif day == 'Friday':
+    #         filterr = datetime.now().date()
+    #         gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -5).filter_by(uuid=current_user.uuid).all()
+    #     else:
+    #         filterr = datetime.now().date()
+    #         gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -7).filter_by(uuid=current_user.uuid).all()
 
-        
-        dataPortfolio = Portfolio.query.filter_by(email=current_user.u_email()).first()
-        
-        dat = []
-        gainAndLoss = sorted(gainAndLoss, key=lambda o: o.date)
-        for i in gainAndLoss:
-            if i.gainType == 'gain':
-                dat.append(float(i.amount))
-            else:
-                dat.append(float(-i.amount))
+    #     dat = []
+    #     gainAndLoss = sorted(gainAndLoss, key=lambda o: o.date)
+    #     for i in gainAndLoss:
+    #         if i.gainType == 'gain':
+    #             dat.append(float(i.amount))
+    #         else:
+    #             dat.append(float(-i.amount))
 
-        gainAndL = Gain_Loss.query.filter_by(uuid=current_user.uuid).all()
-        datM = [0] * 12
-        for entry in gainAndL:
-            date = entry.date
-            if entry.gainType == 'gain':
-                datM[date.month - 1] += float(entry.amount)
-            else:
-                datM[date.month - 1] -= float(entry.amount)
-    except:
-        dataPortfolio = []
-        dat = []
-        datM = []
-        
-    return render_template('index.html', port=dataPortfolio, daily=dat, monthly=datM)
+    #     gainAndL = Gain_Loss.query.filter_by(uuid=current_user.uuid).all()
+    #     datM = [0] * 12
+    #     for entry in gainAndL:
+    #         date = entry.date
+    #         if entry.gainType == 'gain':
+    #             datM[date.month - 1] += float(entry.amount)
+    #         else:
+    #             datM[date.month - 1] -= float(entry.amount)
+    # except:
+    dat = []
+    datM = []
+
+    portfolio = Portfolio.query.filter_by(email=current_user.email).first()
+
+    return render_template('index.html', port=portfolio, daily=dat, monthly=datM)
 
 @blueprint.route('/disclosure')
 @login_required
