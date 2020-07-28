@@ -24,10 +24,8 @@ def index():
     
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
-
     # try:
 
-   
     #     day = datetime.today().strftime('%A')
     #     if day == 'Monday':
     #         filterr = datetime.today()
@@ -65,12 +63,20 @@ def index():
     #         else:
     #             datM[date.month - 1] -= float(entry.amount)
     # except:
-    dat = []
-    datM = []
+    #     dat = []
+    #     datM = []
 
     portfolio = Portfolio.query.filter_by(email=current_user.email).first()
 
-    return render_template('index.html', port=portfolio, daily=dat, monthly=datM)
+    return render_template('index.html', port=portfolio)
+
+@blueprint.route('/chartData')
+@login_required
+def chartUpdatee():
+    if not current_user.is_authenticated:
+        return redirect(url_for('base_blueprint.login'))
+        
+    return chartUpdate()
 
 @blueprint.route('/disclosure')
 @login_required

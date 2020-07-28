@@ -13,6 +13,7 @@ import re
 from functools import wraps
 from decimal import Decimal
 from celery.result import AsyncResult
+from datetime import timedelta
 
 
 def getNotifications(f):
@@ -826,3 +827,48 @@ def healthCheck():
     except Exception as e:
         pass
 
+def chartUpdate():
+    try:
+        day = datetime.datetime.today().strftime('%A')
+        if day == 'Monday':
+            filterr = datetime.datetime.now().date()
+            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -1).filter_by(uuid=current_user.uuid).all()
+        elif day == 'Tuesday':
+            filterr = datetime.datetime.now().date()
+            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -2).filter_by(uuid=current_user.uuid).all()
+        elif day == 'Wednesday':
+            filterr = datetime.datetime.now().date()
+            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -3).filter_by(uuid=current_user.uuid).all()
+        elif day == 'Thursday':
+            filterr = datetime.datetime.now().date()
+            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -4).filter_by(uuid=current_user.uuid).all()
+        elif day == 'Friday':
+            filterr = datetime.datetime.now().date()
+            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -5).filter_by(uuid=current_user.uuid).all()
+        else:
+            filterr = datetime.datetime.now().date()
+            gainAndLoss = db.session.query(Gain_Loss).filter(Gain_Loss.date <= filterr, (Gain_Loss.date-filterr) > -7).filter_by(uuid=current_user.uuid).all()
+
+        dat = []
+        gainAndLoss = sorted(gainAndLoss, key=lambda o: o.date)
+        for i in gainAndLoss:
+            if i.gainType == 'gain':
+                dat.append(float(i.amount))
+            else:
+                dat.append(float(-i.amount))
+
+        gainAndL = Gain_Loss.query.filter_by(uuid=current_user.uuid).all()
+        datM = [0] * 12
+        for entry in gainAndL:
+            date = entry.date
+            if entry.gainType == 'gain':
+                datM[date.month - 1] += float(entry.amount)
+            else:
+                datM[date.month - 1] -= float(entry.amount)
+
+        return json.dumps({'daily':dat,'monthly':datM}), 200, {'ContentType':'application/json'}
+    except Exception as e:
+        print(e)
+        dat = []
+        datM = []
+        return json.dumps({'daily':dat,'monthly':datM}), 400, {'ContentType':'application/json'}
