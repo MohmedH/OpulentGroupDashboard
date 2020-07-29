@@ -26,10 +26,12 @@
 
     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
       <div class="card card-stats">
-        {% if port.gltotal >= 0 %}
-        <div class="card-header card-header-success card-header-icon">
-        {%else%}
-        <div class="card-header card-header-danger card-header-icon">
+        {%if port%}
+          {% if port.gltotal >= 0 %}
+          <div class="card-header card-header-success card-header-icon">
+          {%else%}
+          <div class="card-header card-header-danger card-header-icon">
+          {%endif%}
         {%endif%}
           <div class="card-icon">
             <i class="material-icons">attach_money</i>
@@ -574,8 +576,8 @@
 
   <script>
     var ctx = document.getElementById('dailyChart').getContext('2d');
-    var test = {{daily}}
-        
+    //var test = {{daily}}
+    
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'line',
@@ -587,7 +589,7 @@
                 label: 'Daily Gains',
                 backgroundColor: 'rgb(40, 235, 137)',
                 borderColor: 'rgb(5, 161, 82)',
-                data: test
+                data: []
             }]
         },
 
@@ -595,6 +597,41 @@
         options: {}
     });
 
+    var chartT = new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+          labels: ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+          datasets: [
+            {
+              label: "Gain/Loss ($)",
+              backgroundColor: ["#3e95cd", "#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd", "#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd"],
+              data: []
+            }
+          ]
+        },
+        options: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Monthly Gains / Losses'
+          }
+        }
+    });
+
+    $.ajax({
+        url: '/chartData',
+        type: 'GET',
+        dataType:'json',
+        success: function(result, textStatus, jqXHR){
+            chart.data.datasets[0].data = result['daily'];
+            chartT.data.datasets[0].data = result['monthly'];
+            chart.update();
+            chartT.update();
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+        }
+    });
     // var ctx = document.getElementById('weeklyChart').getContext('2d');
     // var chart = new Chart(ctx, {
     //     // The type of chart we want to create
@@ -665,28 +702,6 @@
           }
         }
       });
-
-      var dataM = {{monthly}}
-      new Chart(document.getElementById("bar-chart"), {
-        type: 'bar',
-        data: {
-          labels: ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-          datasets: [
-            {
-              label: "Gain/Loss ($)",
-              backgroundColor: ["#3e95cd", "#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd", "#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd","#3e95cd"],
-              data: dataM
-            }
-          ]
-        },
-        options: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'Monthly Gains / Losses'
-          }
-        }
-    });
 
   </script>
 
