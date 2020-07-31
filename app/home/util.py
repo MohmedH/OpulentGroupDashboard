@@ -164,6 +164,12 @@ def profile_save(content):
 
 
         else:
+            d = celery.control.inspect()
+            stats = d.stats()
+
+            if stats == None:
+                return json.dumps({'Celery Error':'Not Running'}), 500, {'ContentType':'application/json'}
+
             userEmailCheck = User.query.filter_by(email=content['email']).first()
             if userEmailCheck:
                 return json.dumps({'save':'failed'}), 404, {'ContentType':'application/json'}
@@ -341,6 +347,11 @@ def deposit_request_delete(content):
 
 def deposit_request_admin_approve(content):
     try:
+        d = celery.control.inspect()
+        stats = d.stats()
+
+        if stats == None:
+            return json.dumps({'Celery Error':'Not Running'}), 500, {'ContentType':'application/json'}
         
         date = content['date']
         user = content['user id']
@@ -418,6 +429,12 @@ def deposit_request_admin_deny(content):
 def partners_edit(content):
     #print(content)
     try:
+        d = celery.control.inspect()
+        stats = d.stats()
+
+        if stats == None:
+            return json.dumps({'Celery Error':'Not Running'}), 500, {'ContentType':'application/json'}
+            
         port = Portfolio.query.filter_by(email=content['email']).first()
 
         if port:
@@ -515,8 +532,14 @@ def update_gain_loss_partners(dGLO, updateOnly): #THIS IS UPDATING THE GAIN_LOSS
         pass
         #print(e)
 
-def gains_losses(content):
+def gains_losses(content): 
     try:
+        d = celery.control.inspect()
+        stats = d.stats()
+
+        if stats == None:
+            return json.dumps({'Celery Error':'Not Running'}), 500, {'ContentType':'application/json'}
+
 
         entry = Daily_Gain_Loss.query.filter_by(date=content['date']).first()
 
@@ -682,6 +705,11 @@ def withdrawl_request_delete(content):
 
 def withdrawl_request_admin_approve(content):
     try:
+        d = celery.control.inspect()
+        stats = d.stats()
+
+        if stats == None:
+            return json.dumps({'Celery Error':'Not Running'}), 500, {'ContentType':'application/json'}
         
         date = content['date']
         user = content['user id']
@@ -804,6 +832,12 @@ def workerHealthCheck():
 
 def healthCheck():
     try:
+        d = celery.control.inspect()
+        stats = d.stats()
+
+        if stats ==  None:
+            return json.dumps({'Celery Error':'Not Running'}), 400, {'ContentType':'application/json'}
+
         hc = celery_health().query.first()
         
         if hc:
@@ -812,11 +846,11 @@ def healthCheck():
                 if res.status == 'SUCCESS':
                     hc.status = res.status
                     db.session.commit()
-                return False
+                return json.dumps({'Health Check':'success'}), 200, {'ContentType':'application/json'}
             else:
                 db.session.delete(hc)
                 db.session.commit()
-                return True
+                return json.dumps({'Health Check':'success'}), 200, {'ContentType':'application/json'}
 
         task = workerHealthCheck.delay()
         hc = celery_health()
@@ -824,8 +858,11 @@ def healthCheck():
         hc.status = task.status
         db.session.add(hc)
         db.session.commit()
+        return json.dumps({'Health Check':'success'}), 200, {'ContentType':'application/json'}
     except Exception as e:
+        return json.dumps({'Health Check':'failed'}), 400, {'ContentType':'application/json'}
         pass
+        #print(e)
 
 def chartUpdate():
     try:

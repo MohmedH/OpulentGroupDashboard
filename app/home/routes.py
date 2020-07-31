@@ -75,7 +75,7 @@ def index():
 def chartUpdatee():
     if not current_user.is_authenticated:
         return redirect(url_for('base_blueprint.login'))
-        
+
     return chartUpdate()
 
 @blueprint.route('/disclosure')
@@ -375,11 +375,11 @@ def tax_fee():
             
         if request.method == 'POST':
             #print("GOT YOUR POST")
-            update_tax_fee(request.get_json())
+            return update_tax_fee(request.get_json())
             #print(content['tax'])
 
         if request.method == 'PUT':
-            healthCheck()         
+            return healthCheck()      
             #print(task.status)
             #return json.dumps({'Gain/Loss Update':'success'}), 200, {'ContentType':'application/json'}
         
