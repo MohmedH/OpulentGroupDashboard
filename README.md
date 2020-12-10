@@ -4,6 +4,7 @@
 
 ## Dashboard Features:
 
+- Full stack Web Application in Python with Flask, HTML/JS/CSS with JINJA2
 - SQLite, PostgreSQL, SQLAlchemy ORM
 - Alembic (DB schema migrations)
 - Celery Asynchronus Work
@@ -12,7 +13,6 @@
 - Forms validation
 - Deployment scripts: Docker, Gunicorn / Nginx
 - UI Kit: **[Material Dark Dashboard](https://flask-dashboard-material-dark.appseed.us/login)** (Free version) provided by **Creative-Tim**
-- **MIT License**
 <br />
 
 ## Dashboard Links
@@ -86,17 +86,6 @@ $ flask db stamp head  # To set the revision in the database to the head, withou
 <br />
 
 ## Docker execution
-
-The application can be easily excuted in a docker container. The steps:
-
-> Get the code
-
-```bash
-$ git clone https://github.com/app-generator/flask-dashboard-material-dark.git
-$ cd flask-dashboard-material-dark
-```
-
->You will have to go in and change the server_name in the /nginx/{name}.config file. If you would like to access via localhost, or IP of the machine (i.e without domain name) just ommit this line
 
 > Start the app in Docker
 
